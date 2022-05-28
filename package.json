@@ -1,0 +1,22 @@
+{
+  "name": "potree_1.8",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyojin007/Potree_1.8.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kyojin007/Potree_1.8/issues"
+  },
+  "homepage": "https://github.com/kyojin007/Potree_1.8#readme",
+  "dependencies": {
+    "three": "^0.141.0"
+  }
+}

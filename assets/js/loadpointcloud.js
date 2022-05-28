@@ -12,11 +12,11 @@ const url = 'https://datapoints-io-maptiles.s3.eu-west-2.amazonaws.com/echo-alfa
 
 //Potree.loadPointCloud("https://s3.eu-west-2.amazonaws.com/datapoints-io-maptiles/echo-alfa/bvi-tortola/SteelePoint3/sfm/assets/05_POTREEDATA/pointclouds/index/cloud.js", "pointcloud", e => {
 
-Potree.loadPointCloud('url', 'pointcloud', e => {
+Potree.loadPointCloud(url, 'pointcloud', e => {
     let pointcloud = e.pointcloud;
     let material = pointcloud.material;
     viewer.scene.addPointCloud(pointcloud);
-    material.pointColorType = Potree.PointColorType.RGB; // any Potree.PointColorType.XXXX
+    //material.pointColorType = Potree.PointColorType.RGB; // any Potree.PointColorType.XXXX
     material.size = 1;
     material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
     material.shape = Potree.PointShape.SQUARE;

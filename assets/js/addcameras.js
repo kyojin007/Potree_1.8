@@ -16,20 +16,32 @@ var lookAtPtNum = null;
 var dofilterimages = false;
 var lastLookAtPt = [0,0,0];
 var SCALEIMG = 3;
+
+const thumbs = '02_THUMBNAILS/';
 // when the mouse moves, call the given function
 document.addEventListener('mousemove', onDocumentMouseMove, false);
 document.addEventListener('mousedown', onDocumentMouseClick, false);
 document.addEventListener('keydown', onDocumentKeyPress, false);
 
 // ADD PYRAMIDS TO SCENE
-
+// depends on settings from cameras.js
 var imageobj = Array(ncams);
-for(var imagenum=0;imagenum<ncams;imagenum++){
-    imageobj[imagenum]=makeImageFrustrum(camdir+'02_THUMBNAILS/',camname[imagenum],camRoll[imagenum],camPitch[imagenum],camYaw[imagenum],camX[imagenum],camY[imagenum],camZ[imagenum]);
+for (var imagenum = 0; imagenum < ncams; imagenum++) {
+    imageobj[imagenum] = makeImageFrustrum(
+        camdir+thumbs,
+        camname[imagenum],
+        camRoll[imagenum],
+        camPitch[imagenum],
+        camYaw[imagenum],
+        camX[imagenum],
+        camY[imagenum],
+        camZ[imagenum]
+    );
     imageobj[imagenum].myimagenum = imagenum;
     imageobj[imagenum].isFiltered = false;
     viewer.scene.scene.add(imageobj[imagenum]);
 }
+
 // ADD IMAGE PLANE TO SCENE AS INVISIBLE
 var imageplane = makeImagePlane(camdir+'02_THUMBNAILS/',camname[0],camRoll[0],camPitch[0],camYaw[0],camX[0],camY[0],camZ[0]);
 viewer.scene.scene.add(imageplane);
@@ -40,15 +52,15 @@ setInterval(checkMovement, 100);
 setInterval(cameraOnMap, 100);
 
 /**
- *
+ * adds the camera position to the scene showing the direction of the camera and the view
  * @param {*} imagedir
  * @param {*} imagename
- * @param {*} Rx
- * @param {*} Ry
- * @param {*} Rz
- * @param {*} Cx
- * @param {*} Cy
- * @param {*} Cz
+ * @param {*} Rx roll
+ * @param {*} Ry pitch
+ * @param {*} Rz yaw
+ * @param {*} Cx coordinate x
+ * @param {*} Cy coordinate y
+ * @param {*} Cz height
  * @returns
  */
 function makeImageFrustrum(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz){
@@ -85,10 +97,10 @@ function makeImageFrustrum(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz){
         new THREE.Face3( 0, 3, 4 )
     ];
 
-    var pyramidmaterial = new THREE.MeshBasicMaterial( {   color: 0xf8f9fa,
+    var pyramidmaterial = new THREE.MeshBasicMaterial({
+        color: 0xf8f9fa,
         wireframe: true
-    } );
-
+    });
 
     var pyramid = new THREE.Mesh( pyramidgeometry, pyramidmaterial );
 

@@ -2,8 +2,8 @@
 // LAS/LAZ loading
 //
 
-var common = require("./common"),
-	Promise = require("bluebird");
+// var common = require("./common"),
+//	Promise = require("bluebird");
 
 (function(scope) {
 	"use strict";
@@ -399,5 +399,6 @@ var common = require("./common"),
 
 	scope.LASFile = LASFile;
 	scope.LASModuleWasLoaded = false;
-})(module.exports);
+//})(module.exports);
+})(this);
 
