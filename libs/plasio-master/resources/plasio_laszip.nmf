@@ -1,0 +1,9 @@
+{
+  "program": {
+    "portable": {
+      "pnacl-translate": {
+        "url": "plasio_laszip.pexe"
+      }
+    }
+  }
+}

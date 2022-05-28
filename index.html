@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Potree and three.js based SfM data visualization">
+    <meta name="author" content="Richie Slocum">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>Steel Point</title>
+    <link rel="icon" href="assets/images/logoOSU2.png">
+    <!-- <link rel="stylesheet" type="text/css" href="libs/jstree/themes/mixed/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+
+    <!-- http://bgrins.github.io/spectrum/ colour picker -->
+    <script src="libs/spectrum-1.8.1/spectrum.js"></script>
+    <link rel="stylesheet" type="text/css" href="libs/spectrum-1.8.1/spectrum.css">
+
+    <!-- https://perfectscrollbar.com/ -->
+    <script src="libs/perfect-scrollbar-1.5.5/dist/perfect-scrollbar.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="libs/perfect-scrollbar-1.5.5/css/perfect-scrollbar.css">
+
+    <!-- https://github.com/tjfontaine/node-binaryheap#readme npm i binaryheap -->
+    <script type="module" src="libs/BinaryHeap.js"></script>
+
+    <!-- https://createjs.com/tweenjs -->
+    <script src="https://code.createjs.com/1.0.0/tweenjs.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.min.css"
+        integrity="sha512-oIQ0EBio8LJupRpgmDsIsvm0Fsr6c3XNHLB7at5xb+Cf6eQuCX9xuX8XXGRIcokNgdqL1ms7nqbQ6ryXMGxXpg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- D3 -->
+    <!-- <script src="libs/d3/d3.js"></script> -->
+
+    <!-- https://github.com/proj4js/proj4js converts coordinate systems -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.0/proj4.min.js"
+        integrity="sha512-pLnzlcFjcj9A9ggTfXZyscd+BWAV9pHdDrLekEoTimItxZI3uOAi7CSLXAHGZu7zRgG9Xyhl9bG3A1uRSJJOJg=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer">
+    </script>
+
+    <!-- Open Layers -->
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="libs/openlayers3/ol.css">
+    <script src="libs/openlayers3/ol.js"></script> -->
+
+    <!-- Internationalisation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/21.8.4/i18next.min.js"></script>
+
+    <!-- Potree -->
+    <script src="libs/potree/potree.js"></script>
+    <link rel="stylesheet" type="text/css" href="libs/potree/potree.css">
+
+    <!-- https://www.jstree.com/ - probably not needed
+    <script src="libs/jstree/jstree.js"></script> -->
+
+    <!-- https://github.com/verma/plasio / https://plas.io - point cloud rendering -->
+    <script type="module" src="libs/plasio-master/js/laslaz.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.1.2/math.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+
+    <script src="assets/js/03_POSES/cameras.js"></script>
+</head>
+
+<body>
+
+<!-- Bootstrap Layout -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light py-0" style="z-index:100;">
+    <a class="navbar-brand" href="#">
+        <img src="assets/images/logoOSU2.png"  height="50px" class="d-inline-block align-top">
+    </a>
+
+    <div class="d-flex justify-content-left nav-item">
+        <span class="navbar-text"><h2> Steel Point, BVI</h2></span>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <!--Create class ml-auto for the navbar items you want on the right.-->
+        <ul class="navbar-nav ml-auto" >
+            <!--Previous Image Arrow-->
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="imgleft">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-arrow-left fa-stack-1x buttonfg"></i>
+                    </span>
+                </a>
+            </li>
+
+            <!--Toggle Image -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="toggleimage">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i id="cameraicon" class="fa fa-camera fa-stack-1x buttonfg buttonfgclicked"></i>
+                        <strong class="fa-stack-1x cameranumber" id="btnimagenum">0</strong>
+                    </span>
+                </a>
+            </li>
+
+            <!--Next Image Arrow -->
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="imgright">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-arrow-right fa-stack-1x buttonfg"></i>
+                    </span>
+                </a>
+            </li>
+
+            <!-- Toggle Map-->
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="togglemap">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i id="mapbutton" class="fa fa-map fa-stack-1x buttonfg buttonfgclicked"></i>
+                    </span>
+                </a>
+            </li>
+
+            <!-- Tools-->
+            <li class="nav-item dropdown keep-open">
+                <a class="nav-link" href="#" role="button" data-toggle="dropdown" >
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
+                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <!--use font awesome icons-->
+                    <a id="measheader" class="dropdown-item navbar-text" href="#"> <strong><span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
+                    </span>Measurements</strong> </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item navbar-text" href="#" id="measPoint"> <i class="fa fa-bullseye fa-fw fa-lg"></i> Point </a>
+                    <a class="dropdown-item navbar-text" href="#" id="measDistance"> <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance </a>
+                    <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
+                    <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
+                    <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
+                    <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
+                    <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
+                    <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
+                </div>
+            </li>
+
+            <!-- Appearance-->
+            <li class="nav-item dropdown keep-open">
+                <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right" >
+                    <li id="appearanceheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+                        <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                        </span>
+                        Appearance</strong> </a></li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li><a id="btntogglelighting" class="dropdown-item navbar-text" href="#">
+                        <i id="btnlightbulb" class="fa fa-lightbulb-o fa-fw fa-lg "></i>
+                        Toggle Lighting </a>
+                    </li>
+
+                    <li><a id="btntoggleHQ" class="dropdown-item navbar-text" href="#">
+                        <i id="btnHQ" class="fa fa-star fa-fw fa-lg "></i>
+                        Toggle HQ Points</a>
+                    </li>
+
+
+                    <li><div class="dropdown-divider"></div></li>
+
+                    <li>
+                        <a class="dropdown-item navbar-text" href="#">
+                            <div class="input-group">
+                                <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
+                                <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
+                            </div>
+                            <div id="sliderPointBudget"></div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item navbar-text" href="#">
+                            <div class="input-group">
+                                <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
+                                <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
+                            </div>
+                            <div id="sliderPointSize"></div>
+                        </a>
+                    </li>
+
+                    <li><div class="dropdown-divider"></div></li>
+
+                    <li class="dropdown-item navbar-text">
+                        <div class="input-group">
+                            <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
+                            <input id="colorblendValue" type="text" class="form-control" placeholder="0">
+                        </div>
+                        <div id="sliderColorBlend"></div>
+                        <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
+                            <button id="btnRGB" type="button" class="btn btn-secondary" >RGB</button>
+                            <button id="btnBoth" type="button" class="btn btn-secondary" >Both</button>
+                            <button id="btnElev" type="button" class="btn btn-secondary" >Elev</button>
+                        </div>
+                    </li>
+
+                    <li><div class="dropdown-divider"></div></li>
+
+                    <li>
+                        <a class="dropdown-item navbar-text" href="#">
+                            Elevation Range: <br>
+                            <div id="slider-range"></div>
+                            <div class="input-group">
+                                <span class="input-group-addon navbar-text" style="width:140px">Min:</span>
+                                <input id="minval" type="text" class="form-control" name="email" placeholder="0">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon navbar-text" style="width:140px">Max:</span>
+                                <input id="maxval" type="text" class="form-control" name="password" placeholder="10">
+                            </div>
+                        </a>
+                    </li>
+
+                    <li><div class="dropdown-divider"></div></li>
+
+                    <li>
+                        <a class="dropdown-item navbar-text" href="#">
+                            Colormap: <br>
+                            <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
+                                <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item navbar-text" href="#">
+                            <div class="input-group">
+                                <span class="input-group-addon navbar-text" style="width:140px">Image Opacity:</span>
+                                <input id="sliderImageOpacityValue" type="text" class="form-control" placeholder="100%">
+                            </div>
+
+                            <div id="sliderImageOpacity"></div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Download
+
+            <li class="nav-item dropdown keep-open">
+                <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right" >
+                    <li id="downloadheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+                        <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                        </span>
+                        Download Data</strong> </a></li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_las.txt">
+                        <i class="fa fa-cloud fa-fw fa-lg "></i>
+                        Pointcloud</a>
+                    </li>
+
+                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_ortho.txt">
+                        <i class="fa fa-image fa-fw fa-lg "></i>
+                        Orthophoto</a>
+                    </li>
+
+                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_meta.txt">
+                        <i class="fa fa-file fa-fw fa-lg "></i>
+                        Metadata</a>
+                    </li>
+                </ul>
+            </li> -->
+
+            <!-- Info
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#infomodal">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-info fa-stack-1x buttonfg"></i>
+                    </span>
+                </a>
+            </li>-->
+            <!-- Help
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#helpmodal" onclick="$('#carouselExampleIndicators').carousel(0);">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                        <i class="fa fa-question fa-stack-1x buttonfg"></i>
+                    </span>
+                </a>
+            </li>-->
+        </ul>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+
+<div id="mapcontainer" class="leaflet_map_container">
+<div id="leafletmap"></div>
+</div>
+<div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;" >
+    <div id="potree_render_area">
+    </div>
+
+    <div id="attribution" ><a class="attr" href="https://datapoints.io">&nbsp <i class="fa-regular fa-layer-group"></i> Datapoints (2022)&nbsp </a> </div>
+</div>
+
+<!-- Info Modal -->
+<div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-success">
+                <h4 class="modal-title">Information</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Project</h5>
+                <p>
+                    This project demonstrates a method for visualizing SfM derived pointcloud and image data in a web browser.
+                    Small details, which were not resolved by the SfM pointcloud, can still be visualized using the images.
+                    <br>
+                    <i class="fa fa-github hyp"></i> <a class="hyp" href="https://github.com/hokiespurs/potree-sfm">More information</a>.
+                </p>
+                <hr>
+                <h5>Interface Attribution</h5>
+                <ul>
+                    <li>Pointcloud visualization and tools are built off of <a class="hyp" href="http://potree.org/">potree</a></li>
+                    <li>The map is based on <a class="hyp" href="https://leafletjs.com/">leaflet</a></li>
+                    <li>Basemap is provided by <a class="hyp" href="https://carto.com/location-data-services/basemaps/"> CartoDB</a></li>
+                    <li>The layout utilizes <a class="hyp" href="https://getbootstrap.com/">Bootstrap</a></li>
+                    <li>Coordinate conversions are handled with <a class="hyp" href="http://proj4js.org/">proj4js</a></li>
+                    <li><a class="hyp" href="https://jquery.com/">jQuery</a> and <a class="hyp" href="https://jqueryui.com/">jQuery-ui</a> are used for DOM lookup and sliders</li>
+                </ul>
+                <hr>
+                <h5>Data Attribution</h5>
+                <p>
+                    These data were collected as part of a 2017 Hurricane Irma and Maria Disaster Reconnaissance Survey in the US Virgin Islands by Oregon State University.
+                    Funding for data acquisition was provided by the National Science Foundation through awards CMMI-1761461, CMMI-1661315.
+                    Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation
+                </p>
+                <hr>
+                <img class="" src="img/logoNSF.png" height = "100px" alt="First slide">
+                <img class="" src="img/logoOSU.png" height = "100px" alt="First slide">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-info">
+                <h4 class="modal-title">Help <a id="helpsubtitle">(1/12) - Layout</a></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="helpmodalbody">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+                        <div class="carousel-inner" data-interval="false">
+                            <!-- LAYOUT-->
+                            <div class="carousel-item active" id="carousel_1">
+                                <img class="d-block w-100" src="doc/howto/01_LAYOUT.png" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">The main sections of the project are the interactive map in the upper left, the toolbar across the top, and the main 3D scene. The main scene has both the pointcloud and image pyramids. </p>
+                            </div>
+
+                            <!-- IMAGE PYRAMIDS-->
+                            <div class="carousel-item " id="carousel_2">
+                                <img class="d-block w-100" src="doc/howto/02_IMAGEPYRAMIDS.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">"Image Pyramids" are placed in the scene to represent where an image was taken from. The image plane is placed at a position and orientation computed through SfM processing, such that it aligns with the pointcloud when viewed from the right position.</p>
+                            </div>
+
+                            <!-- SIMPLIFY LAYOUT-->
+                            <div class="carousel-item " id="carousel_3">
+                                <img class="d-block w-100" src="doc/howto/03_SIMPLIFY.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">The view can be simplified to turn off the map and images using the toggle buttons on the toolbar.</p>
+                            </div>
+
+                            <!-- NAVIGATION-->
+                            <div class="carousel-item " id="carousel_4">
+                                <img class="d-block w-100" src="doc/howto/04_NAV.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">Use the left mouse button to orbit around a point.  Use the scroll wheel to zoom.  Use the right mouse button to translate the view.  Double click a point to fly to it.</p>
+                            </div>
+
+                            <!-- NAVIGATION TO LOOK THROUGH-->
+                            <div class="carousel-item " id="carousel_5">
+                                <img class="d-block w-100" src="doc/howto/05_LOOKTHROUGH.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">"Look Through" mode is a view where the viewpoint is placed at the exact position an image was taken from.  The image plane is placed at a position and orientation such that it aligns with the pointcloud.
+                                    This can be seen as holding a picture frame in front of a person.  The two ways to enter this mode are: 1) Click a desired image pyramid.  2) Click the Forward / Backward arrow on the toolbar.
+                                    This will move the current view to align with either the selected image plane, or the previous/next image.</p>
+                            </div>
+
+                            <!-- NAVIGATION IN LOOK THROUGH MODE-->
+                            <div class="carousel-item " id="carousel_6">
+                                <img class="d-block w-100" src="doc/howto/06_NAVTHROUGH.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">Use the left mouse button to pan/tilt the camera.
+                                Use the scroll wheel to zoom in and out (this is actually changing the field of view).
+                                Use the left mouse button to translate the camera position, which will exit the "look-through" view.</p>
+                            </div>
+
+                            <!-- MAP LAYOUT-->
+                            <div class="carousel-item " id="carousel_7">
+                                <img class="d-block w-100" src="doc/howto/07_MAP.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">The interactive map box (which can be resized by dragging the lower right corner), contains a high resolution orthophoto of the scene overlaid on top of a simple basemap.
+                                    The orange polygon represents the approximate footprint of the current view, while the cyan polygon represents the footprint of the current "look-through" image.
+                                    There is a small, draggable dot which reprents the horizontal position of the current view.
+                                </p>
+                            </div>
+
+                            <!-- MEASURE BUTTONS-->
+                            <div class="carousel-item " id="carousel_8">
+                                <img class="d-block w-100" src="doc/howto/08_MEASUREMENTS.png" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">The measurements toolbar enables 4 basic measurements on the pointcloud (Point, Distance, Height, and Angle.)  These measurements are displayed on the screen until the "Remove All" button is clicked.</p>
+                            </div>
+
+                            <!-- LOOK AT FUNCTIONALITY-->
+                            <div class="carousel-item " id="carousel_11">
+                                <img class="d-block w-100" src="doc/howto/11_LOOKAT.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px"> The "Look at" button can be used to filter the image planes by images that can see that point.
+                                    Using the filter button enables and disables filtering by images.
+                                    Using the "Visible Point" button turns the magenta dot off, but maintains the functionality.
+                                    As you step through different "look through" views using the arrow keys, the camera will stay locked onto this point, and skip images which don't see the point.</p>
+                            </div>
+
+                            <!-- APPEARANCE TOOLS-->
+                            <div class="carousel-item " id="carousel_9">
+                                <img class="d-block w-100" src="doc/howto/09_APPEARANCE.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px">There are various appearance sliders and buttons which you can use to change the quality and color of the pointcloud. </p>
+                            </div>
+
+                            <!-- LOOK AT FUNCTIONALITY-->
+                            <div class="carousel-item " id="carousel_12">
+                                <img class="d-block w-100" src="doc/howto/12_OPACITY.gif" width = "100%" alt="First slide">
+                                <hr>
+                                <p style="height:100px"> When in "look through" mode, the opacity of the image can be changed with the appearance slider.</p>
+                            </div>
+
+                            <!-- DOWNLOAD BUTTONS-->
+                            <div class="carousel-item " id="carousel_10">
+                                <img class="d-block w-100" src="doc/howto/13_DOWNLOADS.png" alt="First slide">
+                                <hr>
+                                <p style="height:100px">The downloads dropdown can be used to download the pointcloud, orthophoto, and metadata. *Note: Rather that taxing the OSU research server with Gb of file transfers, small text files are used to demonstrate the functionality.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="prevBtn" type="button" class="btn btn-secondary" onclick="stepCarousel('prev')">Previous</button>
+                <button id="nextBtn" type="button" class="btn btn-primary" onclick="stepCarousel('next')">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="assets/js/loadpointcloud.js"></script>
+<script type="module" src="assets/js/addCameras.js"></script>
+<script src="assets/js/addLeafletMap.js"></script>
+
+<script>
+    var cmap = Potree.Gradients["RAINBOW"];
+    $('#lookAtFilter').hide();
+    $('#toggleLookAtPtVisible').hide();
+
+    function stepCarousel(stepdir){
+        $('#carouselExampleIndicators').carousel(stepdir);
+    }
+
+    $('#carouselExampleIndicators').on('slide.bs.carousel', function (ev) {
+        var id = ev.relatedTarget.id;
+        var str='';
+        switch (id) {
+            case "carousel_1":
+                str = '(1/12) - Layout';
+                break;
+            case "carousel_2":
+                str = '(2/12) - Image Pyramids';
+                break;
+            case "carousel_3":
+                str = '(3/12) - Simplifying the Layout';
+                break;
+            case "carousel_4":
+                str = '(4/12) - Navigation';
+                break;
+            case "carousel_5":
+                str = '(5/12) - Navigating to "Look-through" view';
+                break;
+            case "carousel_6":
+                str = '(6/12) - Navigating in "Look-through" view';
+                break;
+            case "carousel_7":
+                str = '(7/12) - Map Layout';
+                break;
+            case "carousel_8":
+                str = '(8/12) - Measuring Tools';
+                break;
+            case "carousel_9":
+                str = '(10/12) - Changing the Appearance';
+                break;
+            case "carousel_10":
+                str = '(12/12) - Downloading Data';
+                break;
+            case "carousel_11":
+                str = '(9/12) - "Look At" Tool';
+                break;
+            case "carousel_12":
+                str = '(11/12) - "Look At" Image Opacity';
+                break;
+            default:
+            //the id is none of the above 11/9/12/10 = 9/10/11/12
+        }
+        $('#helpsubtitle').text(str);
+    })
+
+    $('#toggleimage').on('click', function (e) {
+        if(camsvisible){
+            if (cameraplaneview) {
+                imageplane.visible = false;
+            }
+            else {
+                turnImagesOff();
+            }
+            camsvisible = false;
+            $('#cameraicon').removeClass('buttonfgclicked');
+        }
+        else {
+            if (cameraplaneview) {
+                imageplane.visible = true;
+            }
+            else {
+                turnImagesOn();
+            }
+            camsvisible = true;
+            $('#cameraicon').addClass('buttonfgclicked');
+        }
+    });
+
+    $('#imgleft').on('click', function (e) {
+        currentid--;
+        if (currentid < 0) {
+            currentid = ncams - 1;
+        }
+        var count=0;
+        var flag = true;
+        if (dofilterimages) {
+            while (imageobj[currentid].isFiltered) {
+                currentid--;
+                count++;
+                if (currentid < 0) {
+                    currentid = ncams - 1;
+                }
+                if (count > ncams) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        if (flag) {
+            flyToCam(currentid);
+        }
+    });
+
+    $('#imgright').on('click', function (e) {
+
+        currentid++;
+        if (currentid>(ncams-1)){currentid=0;}
+
+        var count=0;
+        var flag = true;
+        if (dofilterimages) {
+            while (imageobj[currentid].isFiltered) {
+                currentid++;
+                count++;
+                if (currentid > (ncams - 1)) {
+                    currentid = 0;
+                }
+
+                if (count > ncams) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        if (flag) {
+            flyToCam(currentid);
+        }
+
+    });
+
+    $('#measPoint').on('click', measPoint);
+    $('#measDistance').on('click', measDistance);
+    $('#measHeight').on('click', measHeight);
+    $('#measAngle').on('click', measAngle);
+    $('#measClear').on('click', measClear);
+    $('#measLookAt').on('click', measLookAt);
+    $('#lookAtFilter').on('click', toggleFilterImages);
+    $('#toggleLookAtPtVisible').on('click', toggleLookAtPtVisible);
+
+    $('#togglemap').on('click', togglemap);
+
+    $('#btntogglelighting').on('click', toggleEDL);
+    $('#btntoggleHQ').on('click', toggleHQ);
+
+    $('#btnRGB').on('click', colorbyRGB);
+    $('#btnBoth').on('click', colorbyBoth);
+    $('#btnElev').on('click', colorbyElev);
+
+    $('#btnColormap1').on('click', changeColormap);
+    $('#btnColormap2').on('click', changeColormap);
+    $('#btnColormap3').on('click', changeColormap);
+    $('#btnColormap4').on('click', changeColormap);
+    $('#btnColormap5').on('click', changeColormap);
+    $('#btnColormap6').on('click', changeColormap);
+    $('#btnColormap7').on('click', changeColormap);
+
+    /**
+     *
+     */
+    function toggleLookAtPtVisible() {
+        if (viewer.scene.measurements[lookAtPtNum].visible){
+            viewer.scene.measurements[lookAtPtNum].visible = false;
+            $('#lookatvisible').removeClass('buttonfgclicked');
+        }
+        else {
+            viewer.scene.measurements[lookAtPtNum].visible = true;
+            $('#lookatvisible').addClass('buttonfgclicked');
+        }
+
+    }
+
+    /**
+     *
+     */
+    function toggleFilterImages(){
+        if (dofilterimages){
+            dofilterimages = false;
+            turnImagesOn();
+            if (!camsvisible){
+                turnImagesOff();
+            }
+            else {
+                turnImagesOn();
+                $('#cameraicon').addClass('buttonfgclicked');
+            }
+            $('#filterbtn').removeClass('buttonfgclicked');
+        }
+        else {
+            dofilterimages = true;
+            filterImages();
+            $('#cameraicon').addClass('buttonfgclicked');
+
+            if (cameraplaneview){
+                if (!camsvisible){
+                    turnImagesOff();
+                }
+                else {
+                    turnImagesOff();
+                    $('#cameraicon').addClass('buttonfgclicked');
+                }
+                $('#cameraicon').removeClass('buttonfgclicked');
+            }
+            $('#filterbtn').addClass('buttonfgclicked');
+        }
+    }
+    function toggleEDL(){
+        if (viewer.useEDL){
+            viewer.useEDL = false;
+            $('#btnlightbulb').removeClass('buttonfgclicked');
+        }
+        else {
+            viewer.useEDL = true;
+            $('#btnlightbulb').addClass('buttonfgclicked');
+
+        }
+    }
+
+    function toggleHQ(){
+        if (viewer.useHQ){
+            viewer.useHQ = false;
+            $('#btnHQ').removeClass('buttonfgclicked');
+        }
+        else {
+            viewer.useHQ = true;
+            $('#btnHQ').addClass('buttonfgclicked');
+        }
+    }
+
+    function changeColormap(){
+        switch(this.id){
+            case "btnColormap1":
+                cmap = Potree.Gradients["GRAYSCALE"];
+                break;
+            case "btnColormap2":
+                cmap = Potree.Gradients["INFERNO"];
+                break;
+            case "btnColormap3":
+                cmap = Potree.Gradients["PLASMA"];
+                break;
+            case "btnColormap4":
+                cmap = Potree.Gradients["RAINBOW"];
+                break;
+            case "btnColormap5":
+                cmap = Potree.Gradients["SPECTRAL"];
+                break;
+            case "btnColormap6":
+                cmap = Potree.Gradients["VIRIDIS"];
+                break;
+            case "btnColormap7":
+                cmap = Potree.Gradients["YELLOW_GREEN"];
+                break;
+        }
+        viewer.scene.pointclouds[0].material.gradient = cmap;
+    }
+
+    function colorbyRGB(){
+        viewer.scene.pointclouds.forEach( pc => pc.material.pointColorType = Potree.PointColorType.RGB );
+        $( "#sliderColorBlend" ).slider('value',0);
+        $( "#colorblendValue" ).val(0);
+        viewer.scene.pointclouds[0].material.weightElevation = 0;
+        viewer.scene.pointclouds[0].material.weightRGB = 1;
+    }
+    function colorbyElev(){
+        viewer.scene.pointclouds.forEach( pc => pc.material.pointColorType = Potree.PointColorType.ELEVATION );
+        $( "#sliderColorBlend" ).slider('value',100);
+        $( "#colorblendValue" ).val(100);
+        viewer.scene.pointclouds[0].material.weightElevation = 1;
+        viewer.scene.pointclouds[0].material.weightRGB = 0;
+    }
+    function colorbyBoth() {
+        viewer.scene.pointclouds.forEach(pc => pc.material.pointColorType = Potree.PointColorType.COMPOSITE);
+        $( "#sliderColorBlend" ).slider('value',50);
+        $( "#colorblendValue" ).val(50);
+        viewer.scene.pointclouds[0].material.weightElevation = 50/100;
+        viewer.scene.pointclouds[0].material.weightRGB = 50/100;
+
+    }
+
+    function togglemap(){
+        if (mapshow){
+            $('#mapcontainer').hide();
+            mapshow = false;
+            $('#mapbutton').removeClass('buttonfgclicked');
+        }
+        else {
+            $('#mapcontainer').show();
+            mapshow = true;
+            $('#mapbutton').addClass('buttonfgclicked');
+        }
+
+    }
+    $('#mapcontainer').on('click',triggermapresize);
+    function triggermapresize(){
+        mymap.invalidateSize();
+    }
+
+    $('.keep-open').on({
+        "shown.bs.dropdown": function() { $(this).attr('closable', false); },
+        "hide.bs.dropdown":  function() { return $(this).attr('closable') == 'true'; }
+    });
+
+    $('#measheader').on({
+        "click": function() {
+            $('.keep-open').attr('closable', true );
+            $(this).parent().attr('closable', true );
+        }
+    });
+
+    $('#appearanceheader').on({
+        "click": function() {
+            $('.keep-open').attr('closable', true );
+            $(this).parent().attr('closable', true );
+        }
+    });
+
+    $('#downloadheader').on({
+        "click": function() {
+            $('.keep-open').attr('closable', true );
+            $(this).parent().attr('closable', true );
+        }
+    });
+
+
+    $('.keep-open .nav-link').on({
+        "click": function() {
+            $('.keep-open').attr('closable', true );
+            $(this).parent().attr('closable', true );
+        }
+    });
+
+    var zlimits = [-0.8, 19.1];
+    $( "#minval" ).val( 0 );
+    $( "#maxval" ).val( 15 );
+
+    $( function() {
+        $( "#slider-range" ).slider({
+            range: true,
+            min: Math.floor(zlimits[0]*10)/10,
+            max: Math.ceil(zlimits[1]*10)/10,
+            values: [ Math.floor(zlimits[0]*10)/10, Math.ceil(zlimits[1]*10)/10 ],
+            step: 0.1,
+            slide: function( event, ui ) {
+                $( "#minval" ).val( ui.values[ 0 ]);
+                $( "#maxval" ).val( ui.values[ 1 ]);
+                viewer.scene.pointclouds[0].material.elevationRange = [ui.values[ 0 ], ui.values[ 1 ]];
+            }
+        });
+    } );
+
+    $( function() {
+        $( "#sliderColorBlend" ).slider({
+            range: false,
+            min: 0,
+            max: 100,
+            value: 0,
+            step: 5,
+            slide: function( event, ui ) {
+                $( "#colorblendValue" ).val( ui.value);
+                viewer.scene.pointclouds[0].material.weightElevation = ui.value/100;
+                viewer.scene.pointclouds[0].material.weightRGB = 1-ui.value/100;
+                viewer.scene.pointclouds.forEach(pc => pc.material.pointColorType = Potree.PointColorType.COMPOSITE);
+            }
+            }
+        );
+    } );
+
+    $( function() {
+        $( "#sliderImageOpacity" ).slider({
+                range: false,
+                min: 0,
+                max: 100,
+                value: 100,
+            slide: function( event, ui ) {
+                $( "#sliderImageOpacityValue" )
+                    .val( ui.value.toString() + '%');
+                imageplane.children[0].material.opacity = ui.value/100;
+            }
+            }
+        );
+    } );
+
+    $( function() {
+        $( "#sliderPointBudget" ).slider({
+                range: false,
+                min: 1000000,
+                max: 10000000,
+                value: 1000000,
+                step: 500000,
+            slide: function( event, ui ) {
+                $( "#sliderPointBudgetValue" )
+                    .val( (ui.value/1000000).toString() + 'M');
+                viewer.setPointBudget(ui.value);
+            }
+            }
+        );
+    } );
+
+    viewer.minNodeSize = 50;
+
+    $( function() {
+        $( "#sliderPointSize" ).slider({
+                range: false,
+                min: 0,
+                max: 400,
+                value: 50,
+            slide: function( event, ui ) {
+                $( "#sliderPointSizeValue" )
+                    .val( ui.value);
+                viewer.minNodeSize = ui.value;
+            }
+            }
+        );
+    } );
+
+    // FUNCTION TO GET COLORMAPS TO MAKE IMAGE OF THEM
+    function printColorMap(){
+        var j=0;
+        for(j=0;j<7;j++) {
+            switch(j){
+                case 0:
+                    cmap = Potree.Gradients["GRAYSCALE"];
+                    break;
+                case 1:
+                    cmap = Potree.Gradients["INFERNO"];
+                    break;
+                case 2:
+                    cmap = Potree.Gradients["PLASMA"];
+                    break;
+                case 3:
+                    cmap = Potree.Gradients["RAINBOW"];
+                    break;
+                case 4:
+                    cmap = Potree.Gradients["SPECTRAL"];
+                    break;
+                case 5:
+                    cmap = Potree.Gradients["VIRIDIS"];
+                    break;
+                case 6:
+                    cmap = Potree.Gradients["YELLOW_GREEN"];
+                    break;
+            }
+
+            var i;
+            var strout = '';
+            nelements = cmap.length;
+            for (i = 0; i < nelements; i++) {
+                strout = strout + '\n' + (cmap[i][0].toString() + ',' + cmap[i][1].r.toString() + ',' + cmap[i][1].g.toString() + ',' + cmap[i][1].b.toString());
+            }
+            console.log(strout);
+
+        }
+    }
+</script>
+</body>
+</html>
