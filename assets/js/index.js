@@ -51,7 +51,7 @@ viewer.setBackground("gradient"); // ["skybox", "gradient", "black", "white"];
 viewer.loadSettingsFromURL();
 
 // let measuringTool = new Potree.MeasuringTool(viewer);
-const url = '';
+let url = '';
 
 if (ptcloud) {
     // const url = 'https://datapoints-io-maptiles.s3.eu-west-2.amazonaws.com/echo-alfa/forensic-roofing-solutions/bergham-mews/pointcloud/pointclouds/Bergham_Mews/metadata.json';
@@ -124,4 +124,4 @@ setInterval(checkMovement, 100);
 setInterval(cameraOnMap, 100);
 
 
-export { viewer };
+export { viewer, mouse };

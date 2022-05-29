@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mouse } from './index';
 
 /**
  * adds the camera position to the scene showing the direction of the camera and the view
@@ -209,7 +210,7 @@ function turnImagesOff(){
 /**
  *
  */
-function turnImagesOn(){
+function turnImagesOn(camPix, camFocal) {
     if(!imageobj[0].visible){
         let nimages = imageobj.length;
         let j=0;
@@ -217,7 +218,7 @@ function turnImagesOn(){
         for(j=0;j<nimages;j++){
             imageobj[j].visible=true;
         }
-        filterImages();
+        filterImages(camPix, camFocal);
     }
     $('#cameraicon').addClass('buttonfgclicked');
 }
@@ -276,8 +277,10 @@ function changetoOrbitmode() {
     viewer.fpControls.lockElevation = true;
 }
 
-// CHECK TO SEE IF CAMERA HAS MOVED. IF YES, GET OUT OF FIRST PERSON VIEW AND REMOVE CAMERA PLANE
-function checkMovement(){
+/**
+ * CHECK TO SEE IF CAMERA HAS MOVED. IF YES, GET OUT OF FIRST PERSON VIEW AND REMOVE CAMERA PLANE
+ */
+function checkMovement() {
     //only check if imageplane is visible
     if (cameraplaneview){
         var currentXYZ = getCurrentPos();
@@ -298,7 +301,7 @@ function checkMovement(){
         var currentlookatpt =  viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
 
         if(currentlookatpt.x!=lastLookAtPt.x || currentlookatpt.y!=lastLookAtPt.y || currentlookatpt.z!=lastLookAtPt.z) {
-            filterImages();
+            filterImages(camPix, camFocal);
             console.log("filtering images");
             lastLookAtPt = currentlookatpt;
         }
@@ -326,12 +329,11 @@ function onDocumentMouseMove(event) {
     var elementType="";
     try {
         elementType = document.elementFromPoint(event.clientX, event.clientY).tagName;
-    }
-    catch(err) {
+    } catch(err) {
         elementType = "ERROR";
     }
 
-    mouse.doUse = elementType=='CANVAS';
+    mouse.doUse = elementType == 'CANVAS';
     checkIntersections();
 }
 
@@ -382,15 +384,17 @@ function checkIntersections() {
                     }
                 }
             }
-        }
-        else {
-            if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+        } else {
+            if (INTERSECTED) {
+                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+            }
             INTERSECTED = null;
         }
         //renderer.render( scene, camera );
-    }
-    else {
-        if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+    } else {
+        if (INTERSECTED) {
+            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+        }
         INTERSECTED = null;
     }
 }
@@ -435,6 +439,9 @@ function measAngle(){
         name: 'Angle'});
 }
 
+/**
+ * clear measurements
+ */
 function measClear(){
     viewer.scene.removeAllMeasurements();
     lookAtPtNum = null;
@@ -451,8 +458,11 @@ function measClear(){
     $('#toggleLookAtPtVisible').hide();
 }
 
+/**
+ * measurement
+ */
 function measLookAt(){
-    if(lookAtPtNum!=null){
+    if (lookAtPtNum!=null) {
         viewer.scene.measurements[lookAtPtNum].visible= false;
         lookAtPtNum = null;
         var lastLookAtPt = [0,0,0];
@@ -462,7 +472,7 @@ function measLookAt(){
         $('#filterbtn').addClass('buttonfgclicked');
         if (dofilterimages){
             dofilterimages = false;
-            if(camsvisible){
+            if (camsvisible) {
                 turnImagesOn();
             }
         }
@@ -490,7 +500,7 @@ function measLookAt(){
     }
 }
 
-function filterImages(){
+function filterImages(camPix, camFocal){
     if (lookAtPtNum!=null & dofilterimages == true) {
         xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
 
@@ -502,7 +512,6 @@ function filterImages(){
         var f = camFocal;
         var cx = camPix[0] / 2;
         var cy = camPix[1] / 2;
-
 
         for (var imagenum = 0; imagenum < ncams; imagenum++) {
             var Xc = camX[imagenum];
