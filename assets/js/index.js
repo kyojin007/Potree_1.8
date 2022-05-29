@@ -36,7 +36,6 @@ var SCALEIMG = 3;
 const thumbs = '02_THUMBNAILS/';
 
 const queryString = window.location.search;
-console.log(queryString);
 const urlParams = new URLSearchParams(queryString);
 const ptcloud = urlParams.get('ptcloud');
 
