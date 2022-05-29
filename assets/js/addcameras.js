@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { mouse } from './index';
+import { sfm } from './index';
 
 /**
  * adds the camera position to the scene showing the direction of the camera and the view
@@ -16,7 +16,7 @@ import { mouse } from './index';
  *
  * @returns {THREE.Object3D}
  */
-function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, camFocal, SCALEIMG) {
+function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, camFocal) {
     // instantiate a loader
     var loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
@@ -25,19 +25,14 @@ function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, 
     var pixx = camPix[0] / camFocal;
     var pixy = camPix[1] / camFocal;
 
+    // create a geometry to hold the image
     var imageplane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
-    console.log(imageplane);
-    /*
-    imageplane.vertices[0].z = -1;
-    imageplane.vertices[1].z = -1;
-    imageplane.vertices[2].z = -1;
-    imageplane.vertices[3].z = -1;
-    */
-
-    var imagematerial = new THREE.MeshBasicMaterial( {map:imagetexture, side:THREE.DoubleSide});
+    var imagematerial = new THREE.MeshBasicMaterial({ 'map': imagetexture, 'side': THREE.DoubleSide });
     var image = new THREE.Mesh(imageplane, imagematerial);
-    var pyramidgeometry = new THREE.BufferGeometry();
 
+    // create a pyramid shape to indicate the direction
+    var pyramidgeometry = new THREE.BufferGeometry();
+    /*
     const pyramid_pts = [
         new THREE.Vector3( -pixx/2, -pixy/2, -1 ),
         new THREE.Vector3( -pixx/2, pixy/2, -1 ),
@@ -45,48 +40,52 @@ function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, 
         new THREE.Vector3( pixx/2, -pixy/2, -1 ),
         new THREE.Vector3( 0, 0, 0 )
     ];
-
+    */
+    var pyramid_pts = [
+        new THREE.Vector3(0.5, 0.5, 0.5),
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(1, 0, 1),
+      new THREE.Vector3(1, 0, 0)
+    ];
     pyramidgeometry.setFromPoints(pyramid_pts);
 
-    /*
-    pyramidgeometry.faces = [
-        new THREE.Face3( 1, 0, 4 ),
-        new THREE.Face3( 2, 1, 4 ),
-        new THREE.Face3( 3, 2, 4 ),
-        new THREE.Face3( 0, 3, 4 )
-    ];
-    */
-
-    var pyramidmaterial = new THREE.MeshBasicMaterial(
+    const pyramidmaterial = new THREE.MeshBasicMaterial(
         {
             color: 0xf8f9fa,
             wireframe: true
         }
     );
 
-    var pyramid = new THREE.Mesh( pyramidgeometry, pyramidmaterial );
+    const pyramid = new THREE.Mesh(pyramidgeometry, pyramidmaterial);
 
-    var imagepyramid  = new THREE.Object3D();
+    // create a object group
+    const imagepyramid  = new THREE.Object3D();
 
+    // add the image and the pyramid to the group
     imagepyramid.add(image);
     imagepyramid.add(pyramid);
 
+    // position the group
     imagepyramid.position.x = Cx;
     imagepyramid.position.y = Cy;
     imagepyramid.position.z = Cz;
 
-    imagepyramid.rotation.x = Rx * Math.PI/180;
-    imagepyramid.rotation.y = Ry * Math.PI/180;
-    imagepyramid.rotation.z = Rz * Math.PI/180;
+    // rotate to the correct orientation
+    imagepyramid.rotation.x = Rx * Math.PI / 180;
+    imagepyramid.rotation.y = Ry * Math.PI / 180;
+    imagepyramid.rotation.z = Rz * Math.PI / 180;
 
-    imagepyramid.scale.x = SCALEIMG;
-    imagepyramid.scale.y = SCALEIMG;
-    imagepyramid.scale.z = SCALEIMG;
+    // and scale
+    imagepyramid.scale.x = sfm.SCALEIMG;
+    imagepyramid.scale.y = sfm.SCALEIMG;
+    imagepyramid.scale.z = sfm.SCALEIMG;
 
     return imagepyramid
 }
 
 /**
+ * create a geometry for a larger image
  *
  * @param {*} imagedir
  * @param {*} imagename
@@ -96,9 +95,10 @@ function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, 
  * @param {*} Cx
  * @param {*} Cy
  * @param {*} Cz
+ *
  * @returns
  */
-function makeImagePlane(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz) {
+function makeImagePlane(imagedir, imagename,Rx,Ry,Rz,Cx,Cy,Cz) {
     // instantiate a loader
     var loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
@@ -122,6 +122,7 @@ function makeImagePlane(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz) {
 
     imagepyramid.children[0].material.opacity = 1;
     imagepyramid.children[0].material.transparent  = true;
+
     return imagepyramid
 }
 
@@ -149,9 +150,9 @@ function changeImagePlane(id) {
     imageplane.rotation.y = Ry * Math.PI/180;
     imageplane.rotation.z = Rz * Math.PI/180;
 
-    imageplane.scale.x = SCALEIMG;
-    imageplane.scale.y = SCALEIMG;
-    imageplane.scale.z = SCALEIMG;
+    imageplane.scale.x = sfm.SCALEIMG;
+    imageplane.scale.y = sfm.SCALEIMG;
+    imageplane.scale.z = sfm.SCALEIMG;
 
     imageplane.visible = true;
 }

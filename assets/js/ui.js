@@ -204,6 +204,7 @@ function toggleFilterImages(){
         $('#filterbtn').addClass('buttonfgclicked');
     }
 }
+
 function toggleEDL(){
     if (viewer.useEDL){
         viewer.useEDL = false;

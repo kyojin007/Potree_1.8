@@ -18,20 +18,21 @@ var camFocal = 4552.94;
 var camPix = [5280,3956];
 
 // GLOBALS
-var mouse = { x: 0, y: 0, doUse: false };
-var INTERSECTED = null;
-var camsvisible = true;
-var cameraplaneview = false;
-var lastXYZ = [0,0,0];
-var raycaster = new THREE.Raycaster();
-var wantcamsvisible = true;
-var ncams = camX.length;
-var currentid = ncams-1;
-var mapshow = true;
-var lookAtPtNum = null;
-var dofilterimages = false;
-var lastLookAtPt = [0,0,0];
-var SCALEIMG = 3;
+const sfm = {};
+sfm.mouse = { x: 0, y: 0, doUse: false };
+sfm.INTERSECTED = null;
+sfm.camsvisible = true;
+sfm.cameraplaneview = false;
+sfm.lastXYZ = [0,0,0];
+sfm.raycaster = new THREE.Raycaster();
+sfm.wantcamsvisible = true;
+sfm.ncams = camX.length;
+sfm.currentid = sfm.ncams - 1;
+sfm.mapshow = true;
+sfm.lookAtPtNum = null;
+sfm.dofilterimages = false;
+sfm.lastLookAtPt = [0,0,0];
+sfm.SCALEIMG = 3;
 
 const thumbs = '02_THUMBNAILS/';
 
@@ -84,9 +85,8 @@ document.addEventListener('mousedown', onDocumentMouseClick, false);
 document.addEventListener('keydown', onDocumentKeyPress, false);
 
 // ADD PYRAMIDS TO SCENE
-// depends on settings from cameras.js
-var imageobj = Array(ncams);
-for (var imagenum = 0; imagenum < ncams; imagenum++) {
+var imageobj = Array(sfm.ncams);
+for (let imagenum = 0; imagenum < sfm.ncams; imagenum++) {
     imageobj[imagenum] = makeImageFrustrum(
         camdir + thumbs,
         camname[imagenum],
@@ -98,14 +98,14 @@ for (var imagenum = 0; imagenum < ncams; imagenum++) {
         camZ[imagenum],
         camPix,
         camFocal,
-        SCALEIMG
+        sfm.SCALEIMG
     );
     imageobj[imagenum].myimagenum = imagenum;
     imageobj[imagenum].isFiltered = false;
     viewer.scene.scene.add(imageobj[imagenum]);
 }
 
-// ADD IMAGE PLANE TO SCENE AS INVISIBLE
+// ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
 var imageplane = makeImagePlane(
     camdir + thumbs,
     camname[0],
@@ -124,4 +124,4 @@ setInterval(checkMovement, 100);
 setInterval(cameraOnMap, 100);
 
 
-export { viewer, mouse };
+export { viewer, sfm };
