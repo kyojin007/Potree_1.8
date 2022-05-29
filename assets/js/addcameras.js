@@ -1,215 +1,31 @@
 import * as THREE from 'three';
-import { sfm } from './index';
+import { scene } from './index';
 
-/**
- * adds the camera position to the scene showing the direction of the camera and the view
- * @param {*} imagedir
- * @param {*} imagename
- * @param {*} Rx roll
- * @param {*} Ry pitch
- * @param {*} Rz yaw
- * @param {*} Cx coordinate x
- * @param {*} Cy coordinate y
- * @param {*} Cz height
- * @param {*} camPix
- * @param {*} camFocal
- *
- * @returns {THREE.Object3D}
- */
-function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, camFocal) {
-    // instantiate a loader
-    var loader = new THREE.TextureLoader();
-    loader.crossOrigin = 'anonymous';
-    var imagetexture = loader.load(imagedir + imagename);
-
-    var pixx = camPix[0] / camFocal;
-    var pixy = camPix[1] / camFocal;
-
-    // create a geometry to hold the image
-    var imageplane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
-    var imagematerial = new THREE.MeshBasicMaterial({ 'map': imagetexture, 'side': THREE.DoubleSide });
-    var image = new THREE.Mesh(imageplane, imagematerial);
-
-    // create a pyramid shape to indicate the direction
-    var pyramidgeometry = new THREE.BufferGeometry();
-    /*
-    const pyramid_pts = [
-        new THREE.Vector3( -pixx/2, -pixy/2, -1 ),
-        new THREE.Vector3( -pixx/2, pixy/2, -1 ),
-        new THREE.Vector3( pixx/2, pixy/2, -1 ),
-        new THREE.Vector3( pixx/2, -pixy/2, -1 ),
-        new THREE.Vector3( 0, 0, 0 )
-    ];
-    */
-    var pyramid_pts = [
-        new THREE.Vector3(0.5, 0.5, 0.5),
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, 0, 1),
-      new THREE.Vector3(1, 0, 1),
-      new THREE.Vector3(1, 0, 0)
-    ];
-    pyramidgeometry.setFromPoints(pyramid_pts);
-
-    const pyramidmaterial = new THREE.MeshBasicMaterial(
-        {
-            color: 0xf8f9fa,
-            wireframe: true
-        }
-    );
-
-    const pyramid = new THREE.Mesh(pyramidgeometry, pyramidmaterial);
-
-    // create a object group
-    const imagepyramid  = new THREE.Object3D();
-
-    // add the image and the pyramid to the group
-    imagepyramid.add(image);
-    imagepyramid.add(pyramid);
-
-    // position the group
-    imagepyramid.position.x = Cx;
-    imagepyramid.position.y = Cy;
-    imagepyramid.position.z = Cz;
-
-    // rotate to the correct orientation
-    imagepyramid.rotation.x = Rx * Math.PI / 180;
-    imagepyramid.rotation.y = Ry * Math.PI / 180;
-    imagepyramid.rotation.z = Rz * Math.PI / 180;
-
-    // and scale
-    imagepyramid.scale.x = sfm.SCALEIMG;
-    imagepyramid.scale.y = sfm.SCALEIMG;
-    imagepyramid.scale.z = sfm.SCALEIMG;
-
-    return imagepyramid
-}
-
-/**
- * create a geometry for a larger image
- *
- * @param {*} imagedir
- * @param {*} imagename
- * @param {*} Rx
- * @param {*} Ry
- * @param {*} Rz
- * @param {*} Cx
- * @param {*} Cy
- * @param {*} Cz
- *
- * @returns
- */
-function makeImagePlane(imagedir, imagename,Rx,Ry,Rz,Cx,Cy,Cz) {
-    // instantiate a loader
-    var loader = new THREE.TextureLoader();
-    loader.crossOrigin = 'anonymous';
-    var imagetexture = loader.load(imagedir + imagename);
-
-    var pixx = camPix[0]/camFocal;
-    var pixy = camPix[1]/camFocal;
-
-    var imageplane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
-    imageplane.vertices[0].z = -1;
-    imageplane.vertices[1].z = -1;
-    imageplane.vertices[2].z = -1;
-    imageplane.vertices[3].z = -1;
-
-    var imagematerial = new THREE.MeshBasicMaterial( {map:imagetexture, side:THREE.DoubleSide});
-    var image = new THREE.Mesh(imageplane, imagematerial);
-
-    var imagepyramid  = new THREE.Object3D();
-
-    imagepyramid.add(image);
-
-    imagepyramid.children[0].material.opacity = 1;
-    imagepyramid.children[0].material.transparent  = true;
-
-    return imagepyramid
-}
-
-/**
- *
- * @param {*} id
- */
-function changeImagePlane(id) {
-    var loader = new THREE.TextureLoader();
-    loader.crossOrigin = 'anonymous';
-    imageplane.children[0].material.dispose();
-    imageplane.children[0].material.map = loader.load(camdir + '01_IMAGES/' + camname[id]);
-    var Cx = camX[id];
-    var Cy = camY[id];
-    var Cz = camZ[id];
-    var Rx = camRoll[id];
-    var Ry = camPitch[id];
-    var Rz = camYaw[id];
-
-    imageplane.position.x = Cx;
-    imageplane.position.y = Cy;
-    imageplane.position.z = Cz;
-
-    imageplane.rotation.x = Rx * Math.PI/180;
-    imageplane.rotation.y = Ry * Math.PI/180;
-    imageplane.rotation.z = Rz * Math.PI/180;
-
-    imageplane.scale.x = sfm.SCALEIMG;
-    imageplane.scale.y = sfm.SCALEIMG;
-    imageplane.scale.z = sfm.SCALEIMG;
-
-    imageplane.visible = true;
-}
-
-//Useful for debugging
+// Useful for debugging
 function changeImagePlaneOrientation(Rx,Ry,Rz){
     imageplane.rotation.x = Rx * Math.PI/180;
     imageplane.rotation.y = Ry * Math.PI/180;
     imageplane.rotation.z = Rz * Math.PI/180;
 }
 
-/**
- *
- * @param {*} id
- */
-function flyToCam(id){
-    if (id < camX.length) {
-        imageplane.visible = false;
-        viewer.fpControls.stop();
-        changetoOrbitmode();
-        moveCamera(id);
-        changeImagePlane(id);
-        lastXYZ= [Math.round(camX[id]*100)/100, Math.round(camY[id]*100)/100, Math.round(camZ[id]*100)/100];
-        $('#toggleimageplane').removeClass('disabled');
-        $('#togglecam').addClass('disabled');
-        turnImagesOff();
-        currentid = id;
-        cameraplaneview = true;
-        camsvisible = true;
-        $('#btnimagenum').text(id.toString());
-        $('#cameraicon').addClass('buttonfgclicked');
-        if (lookAtPtNum!=null){
-            var xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
-            viewer.scene.view.lookAt(xyzlookat);
-        }
-    } else {
-        console.log(id.toString() + 'Out of Range (Max = ' + camX.length.toString() + ')')
-    }
-}
 
 /**
- *
+ * hide the thumbnails
  */
 function turnImagesOff(){
-    if (camsvisible) {
-        let nimages = imageobj.length;
-        let j=0;
-        camsvisible = false;
-        for(j=0;j<nimages;j++){
-            imageobj[j].visible=false;
-        }
+  if (camsvisible) {
+    let nimages = imageobj.length;
+    let j = 0;
+    camsvisible = false;
+    for(let j=0; j < nimages; j++){
+        imageobj[j].visible = false;
     }
-    $('#cameraicon').removeClass('buttonfgclicked');
+  }
+  $('#cameraicon').removeClass('buttonfgclicked');
 }
 
 /**
- *
+ * show the thumbnails
  */
 function turnImagesOn(camPix, camFocal) {
     if(!imageobj[0].visible){
@@ -225,14 +41,14 @@ function turnImagesOn(camPix, camFocal) {
 }
 
 /**
- *
+ * toggle the state of showing thumbnails
  */
-function toggleImagesVisible(){
+function toggleImagesVisible() {
     let nimages = imageobj.length;
-    let j=0;
+    let j = 0;
     camsvisible = !camsvisible;
-    for(j=0;j<nimages;j++){
-        imageobj[j].visible=camsvisible;
+    for (let j=0; j < nimages; j++) {
+        imageobj[j].visible = camsvisible;
     }
     wantcamsvisible = camsvisible;
 }
@@ -262,8 +78,8 @@ function moveCamera(id) {
 }
 
 function changeCameraOrientation(pitch,yaw){
-    viewer.scene.view.pitch = pitch * Math.PI/180;
-    viewer.scene.view.yaw = yaw * Math.PI/180;
+    viewer.scene.view.pitch = pitch * Math.PI / 180;
+    viewer.scene.view.yaw = yaw * Math.PI / 180;
 }
 
 /**
@@ -279,126 +95,8 @@ function changetoOrbitmode() {
 }
 
 /**
- * CHECK TO SEE IF CAMERA HAS MOVED. IF YES, GET OUT OF FIRST PERSON VIEW AND REMOVE CAMERA PLANE
- */
-function checkMovement() {
-    //only check if imageplane is visible
-    if (cameraplaneview){
-        var currentXYZ = getCurrentPos();
-        if(currentXYZ[0]!=lastXYZ[0] || currentXYZ[1]!=lastXYZ[1] || currentXYZ[2]!=lastXYZ[2]){
-            imageplane.visible=false;
-            changetoflymode();
-            if (camsvisible | cameraplaneview){
-                turnImagesOn();
-            }
-            cameraplaneview = false;
-            // fix issue where radius was crazy far away
-            if (viewer.scene.view.radius>50){
-                viewer.scene.view.radius = 50;
-            }
-        }
-    }
-    if (lookAtPtNum!=null && dofilterimages && !cameraplaneview){
-        var currentlookatpt =  viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
-
-        if(currentlookatpt.x!=lastLookAtPt.x || currentlookatpt.y!=lastLookAtPt.y || currentlookatpt.z!=lastLookAtPt.z) {
-            filterImages(camPix, camFocal);
-            console.log("filtering images");
-            lastLookAtPt = currentlookatpt;
-        }
-    }
-
-}
-
-// RETURN CURRENT CAMERA POSITION [X, Y, Z]
-function getCurrentPos(){
-    var ixyz = [Math.round(viewer.scene.view.position.x*100)/100,
-                Math.round(viewer.scene.view.position.y*100)/100,
-                Math.round(viewer.scene.view.position.z*100)/100];
-    return ixyz;
-}
-
-// HANDLE MOUSE OVER PYRAMIDS
-function onDocumentMouseMove(event) {
-    // the following line would stop any other event handler from firing
-    // (such as the mouse's TrackballControls)
-    // event.preventDefault();
-
-    // update the mouse variable
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    var elementType="";
-    try {
-        elementType = document.elementFromPoint(event.clientX, event.clientY).tagName;
-    } catch(err) {
-        elementType = "ERROR";
-    }
-
-    mouse.doUse = elementType == 'CANVAS';
-    checkIntersections();
-}
-
-function onDocumentMouseClick(event) {
-    if (mouse.doUse && event.button==0) {
-        if (INTERSECTED!=null) {
-            flytoimagenum = INTERSECTED.parent.myimagenum;
-            flyToCam(flytoimagenum);
-        }
-    }
-}
-
-function onDocumentKeyPress(event){
-    var keycode = event.code;
-    switch (keycode){
-        case "Space":
-            flyTo(XYZPTend,100,5000);
-            break;
-        case "Digit1":
-            XYZPTend = getCameraXYZPT();
-            break;
-    }
-    console.log(event);
-}
-
-/**
  *
  */
-function checkIntersections() {
-    if (mouse.doUse) {
-        raycaster.setFromCamera(mouse, viewer.scene.cameraP);
-
-        // calculate objects intersecting the picking ray
-        var intersects = raycaster.intersectObjects(viewer.scene.scene.children, true);
-        if (intersects.length > 0) {
-            var dist2obj = 99999;
-            for (var i = 0; i < intersects.length; i++) { //for each intersected object
-                if (intersects[i].object.geometry.vertices.length == 5) { // see if it has 5 vertices (pyramid)
-                    if (intersects[i].distance < dist2obj) { // if it does, see if it's closer than the last distance
-                        dist2obj = intersects[i].distance;
-                        if (INTERSECTED != intersects[i].object) { //if it isnt the previous object
-                            if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex); //change the old one back
-
-                            INTERSECTED = intersects[i].object; //make this the new one
-                            INTERSECTED.currentHex = INTERSECTED.material.color.getHex(); //get its color
-                            intersects[i].object.material.color.set(0xff0000); //change it's color
-                        }
-                    }
-                }
-            }
-        } else {
-            if (INTERSECTED) {
-                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-            }
-            INTERSECTED = null;
-        }
-        //renderer.render( scene, camera );
-    } else {
-        if (INTERSECTED) {
-            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-        }
-        INTERSECTED = null;
-    }
-}
 
 //MEASUREMENT FUNCTIONS
 function measPoint(){
@@ -502,40 +200,43 @@ function measLookAt(){
 }
 
 function filterImages(camPix, camFocal){
-    if (lookAtPtNum!=null & dofilterimages == true) {
-        xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
+  if (lookAtPtNum!=null & dofilterimages == true) {
+    xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
 
-        var Xw = xyzlookat.x;
-        var Yw = xyzlookat.y;
-        var Zw = xyzlookat.z;
+    var Xw = xyzlookat.x;
+    var Yw = xyzlookat.y;
+    var Zw = xyzlookat.z;
 
-        let testid = 1080;
-        var f = camFocal;
-        var cx = camPix[0] / 2;
-        var cy = camPix[1] / 2;
+    let testid = 1080;
+    var f = camFocal;
+    var cx = camPix[0] / 2;
+    var cy = camPix[1] / 2;
 
-        for (var imagenum = 0; imagenum < ncams; imagenum++) {
-            var Xc = camX[imagenum];
-            var Yc = camY[imagenum];
-            var Zc = camZ[imagenum];
-            var Rx = camRoll[imagenum];
-            var Ry = camPitch[imagenum];
-            var Rz = camYaw[imagenum];
+    for (var imagenum = 0; imagenum < ncams; imagenum++) {
+        var Xc = camX[imagenum];
+        var Yc = camY[imagenum];
+        var Zc = camZ[imagenum];
+        var Rx = camRoll[imagenum];
+        var Ry = camPitch[imagenum];
+        var Rz = camYaw[imagenum];
 
-            if (!isptincamera(f, cx, cy, Xc, Yc, Zc, Xw, Yw, Zw, Rx, Ry, Rz)) {
-                imageobj[imagenum].visible = false;
-                imageobj[imagenum].isFiltered = true;
-            }
-            else {
-                imageobj[imagenum].visible = true;
-                imageobj[imagenum].isFiltered = false;
-            }
-            camsvisible = true;
+        if (!isptincamera(f, cx, cy, Xc, Yc, Zc, Xw, Yw, Zw, Rx, Ry, Rz)) {
+            imageobj[imagenum].visible = false;
+            imageobj[imagenum].isFiltered = true;
         }
+        else {
+            imageobj[imagenum].visible = true;
+            imageobj[imagenum].isFiltered = false;
+        }
+        camsvisible = true;
     }
+  }
 }
 
-function cameraOnMap(){
+/**
+ * plots the camera position onto the Leaflet mini-map?
+ */
+function cameraOnMap(uasmarker) {
     // Add Camera Dot to Map
     var camerapos = viewer.scene.view.position;
     var cameraLatLon = projected2WGS84(camerapos.x,camerapos.y);
@@ -561,7 +262,7 @@ function cameraOnMap(){
     }
 
     // add magenta dot if in camera
-    if (lookAtPtNum!=null){
+    if (lookAtPtNum != null){
         var camerapos = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
         var cameraLatLon = projected2WGS84(camerapos.x,camerapos.y);
 
@@ -573,6 +274,10 @@ function cameraOnMap(){
         lookatmarker.update();    }
 }
 
+/**
+ *
+ * @returns
+ */
 function calcCamerafcxcy(){
     var camfov = viewer.getFOV()*Math.PI/180;
     var cx = window.innerWidth/2;
@@ -581,6 +286,19 @@ function calcCamerafcxcy(){
     return [f,cy,cx]
 }
 
+/**
+ *
+ * @param {*} polygon
+ * @param {*} Xc
+ * @param {*} Yc
+ * @param {*} Zc
+ * @param {*} Rx
+ * @param {*} Ry
+ * @param {*} Rz
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ */
 function updateFootprintRxyz(polygon,Xc,Yc,Zc,Rx,Ry,Rz,f,cx,cy){
     Rx = Rx*Math.PI/180;
     Ry = (Ry-180)*Math.PI/180;
@@ -592,6 +310,18 @@ function updateFootprintRxyz(polygon,Xc,Yc,Zc,Rx,Ry,Rz,f,cx,cy){
     polygon.redraw();
 }
 
+/**
+ *
+ * @param {*} polygon
+ * @param {*} Xc
+ * @param {*} Yc
+ * @param {*} Zc
+ * @param {*} pan
+ * @param {*} tilt
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ */
 function updateFootprintPanTilt(polygon,Xc,Yc,Zc,pan,tilt,f,cx,cy){
     P = calcP_pantilt(Xc,Yc,Zc,pan,tilt,f,cx,cy);
     footprintLL = calcFootprint(P,f,cx,cy);
@@ -599,6 +329,12 @@ function updateFootprintPanTilt(polygon,Xc,Yc,Zc,pan,tilt,f,cx,cy){
     polygon.redraw();
 }
 
+/**
+ *
+ * @param {*} x
+ * @param {*} y
+ * @returns
+ */
 function projected2WGS84(x,y){
     let pointcloudProjection = "+proj=utm +zone=20 +ellps=GRS80 +datum=NAD83 +units=m +no_defs";
     let mapProjection = proj4.defs("WGS84");
@@ -608,6 +344,12 @@ function projected2WGS84(x,y){
     return [lonlat[1], lonlat[0]]
 }
 
+/**
+ *
+ * @param {*} lat
+ * @param {*} lng
+ * @returns
+ */
 function projectedFromWGS84(lat,lng){
     let pointcloudProjection = "+proj=utm +zone=20 +ellps=GRS80 +datum=NAD83 +units=m +no_defs";
     let mapProjection = proj4.defs("WGS84");
@@ -617,6 +359,9 @@ function projectedFromWGS84(lat,lng){
     return [xy[0], xy[1]]
 }
 
+/**
+ *
+ */
 function markerdragged(){
     var LatLng = uasmarker.getLatLng();
     var newxy = projectedFromWGS84(LatLng.lat,LatLng.lng);
@@ -626,6 +371,15 @@ function markerdragged(){
 }
 
 // PHOTOGRAMMETRY
+
+/**
+ *
+ * @param {*} P
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ * @returns
+ */
 function calcFootprint(P,f,cx,cy){
     var footprintpixels = calcCornerPixHorizonTrim(P,f,cx,cy);
     if (footprintpixels.length==0){
@@ -640,6 +394,18 @@ function calcFootprint(P,f,cx,cy){
     return LLcorners
 }
 
+/**
+ *
+ * @param {*} Xc
+ * @param {*} Yc
+ * @param {*} Zc
+ * @param {*} pan
+ * @param {*} tilt
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ * @returns
+ */
 function calcP_pantilt(Xc,Yc,Zc,pan,tilt,f,cx,cy){
     let P1 = [f*Math.cos(pan)*Math.cos(tilt) + cx*Math.cos(pan)*Math.sin(tilt),
         f*Math.cos(tilt)*Math.sin(pan) + cx*Math.sin(pan)*Math.sin(tilt),
@@ -656,6 +422,19 @@ function calcP_pantilt(Xc,Yc,Zc,pan,tilt,f,cx,cy){
     return [P1, P2, P3];
 }
 
+/**
+ *
+ * @param {*} Xc
+ * @param {*} Yc
+ * @param {*} Zc
+ * @param {*} Rx
+ * @param {*} Ry
+ * @param {*} Rz
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ * @returns
+ */
 function calcP_RxRyRz(Xc,Yc,Zc,Rx,Ry,Rz,f,cx,cy){
     let P1 = [cx*Math.sin(Ry) + f*Math.cos(Ry)*Math.cos(Rz),
         f*(Math.cos(Rx)*Math.sin(Rz) + Math.cos(Rz)*Math.sin(Rx)*Math.sin(Ry)) - cx*Math.cos(Ry)*Math.sin(Rx),
@@ -672,10 +451,17 @@ function calcP_RxRyRz(Xc,Yc,Zc,Rx,Ry,Rz,f,cx,cy){
     return [P1, P2, P3];
 }
 
+/**
+ *
+ * @param {*} P
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ * @returns
+ */
 function calcCornerPixHorizonTrim(P,f,cx,cy) {
     // determine angle to not go over
-
-    let horizonangle = 85*Math.PI/180;
+    let horizonangle = 85 * Math.PI / 180;
     // [ 4       1 ]
     // |           | Pixel corners in this order
     // |           |
@@ -769,4 +555,4 @@ function uv2xyconstz(pixx,pixy,P){
     return [Xw, Yw, s];
 }
 
-export { makeImageFrustrum, makeImagePlane, onDocumentKeyPress, onDocumentMouseMove, onDocumentMouseClick };
+export { cameraOnMap };
