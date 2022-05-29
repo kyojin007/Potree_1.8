@@ -1,55 +1,4 @@
-import * as THREE from '../../node_modules/three';
-
-//GLOBALS
-var mouse = {x: 0, y: 0, doUse: false};
-var INTERSECTED = null;
-var camsvisible = true;
-var cameraplaneview = false;
-var lastXYZ = [0,0,0];
-var raycaster = new THREE.Raycaster();
-var wantcamsvisible = true;
-var ncams = camX.length;
-var currentid = ncams-1;
-let measuringTool = new Potree.MeasuringTool(viewer);
-var mapshow = true;
-var lookAtPtNum = null;
-var dofilterimages = false;
-var lastLookAtPt = [0,0,0];
-var SCALEIMG = 3;
-
-const thumbs = '02_THUMBNAILS/';
-// when the mouse moves, call the given function
-document.addEventListener('mousemove', onDocumentMouseMove, false);
-document.addEventListener('mousedown', onDocumentMouseClick, false);
-document.addEventListener('keydown', onDocumentKeyPress, false);
-
-// ADD PYRAMIDS TO SCENE
-// depends on settings from cameras.js
-var imageobj = Array(ncams);
-for (var imagenum = 0; imagenum < ncams; imagenum++) {
-    imageobj[imagenum] = makeImageFrustrum(
-        camdir+thumbs,
-        camname[imagenum],
-        camRoll[imagenum],
-        camPitch[imagenum],
-        camYaw[imagenum],
-        camX[imagenum],
-        camY[imagenum],
-        camZ[imagenum]
-    );
-    imageobj[imagenum].myimagenum = imagenum;
-    imageobj[imagenum].isFiltered = false;
-    viewer.scene.scene.add(imageobj[imagenum]);
-}
-
-// ADD IMAGE PLANE TO SCENE AS INVISIBLE
-var imageplane = makeImagePlane(camdir+'02_THUMBNAILS/',camname[0],camRoll[0],camPitch[0],camYaw[0],camX[0],camY[0],camZ[0]);
-viewer.scene.scene.add(imageplane);
-imageplane.visible = false;
-
-//checks if user moved the screen, and therefore imageplane should be turned off
-setInterval(checkMovement, 100);
-setInterval(cameraOnMap, 100);
+import * as THREE from 'three';
 
 /**
  * adds the camera position to the scene showing the direction of the camera and the view
@@ -61,28 +10,34 @@ setInterval(cameraOnMap, 100);
  * @param {*} Cx coordinate x
  * @param {*} Cy coordinate y
  * @param {*} Cz height
- * @returns
+ * @param {*} camPix
+ * @param {*} camFocal
+ *
+ * @returns {THREE.Object3D}
  */
-function makeImageFrustrum(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz){
+function makeImageFrustrum(imagedir, imagename, Rx, Ry, Rz, Cx, Cy, Cz, camPix, camFocal, SCALEIMG) {
     // instantiate a loader
     var loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
     var imagetexture = loader.load(imagedir + imagename);
 
-    var pixx = camPix[0]/camFocal;
-    var pixy = camPix[1]/camFocal;
+    var pixx = camPix[0] / camFocal;
+    var pixy = camPix[1] / camFocal;
 
     var imageplane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
+    console.log(imageplane);
+    /*
     imageplane.vertices[0].z = -1;
     imageplane.vertices[1].z = -1;
     imageplane.vertices[2].z = -1;
     imageplane.vertices[3].z = -1;
+    */
 
     var imagematerial = new THREE.MeshBasicMaterial( {map:imagetexture, side:THREE.DoubleSide});
     var image = new THREE.Mesh(imageplane, imagematerial);
-    var pyramidgeometry = new THREE.Geometry();
+    var pyramidgeometry = new THREE.BufferGeometry();
 
-    pyramidgeometry.vertices = [
+    const pyramid_pts = [
         new THREE.Vector3( -pixx/2, -pixy/2, -1 ),
         new THREE.Vector3( -pixx/2, pixy/2, -1 ),
         new THREE.Vector3( pixx/2, pixy/2, -1 ),
@@ -90,17 +45,23 @@ function makeImageFrustrum(imagedir,imagename,Rx,Ry,Rz,Cx,Cy,Cz){
         new THREE.Vector3( 0, 0, 0 )
     ];
 
+    pyramidgeometry.setFromPoints(pyramid_pts);
+
+    /*
     pyramidgeometry.faces = [
         new THREE.Face3( 1, 0, 4 ),
         new THREE.Face3( 2, 1, 4 ),
         new THREE.Face3( 3, 2, 4 ),
         new THREE.Face3( 0, 3, 4 )
     ];
+    */
 
-    var pyramidmaterial = new THREE.MeshBasicMaterial({
-        color: 0xf8f9fa,
-        wireframe: true
-    });
+    var pyramidmaterial = new THREE.MeshBasicMaterial(
+        {
+            color: 0xf8f9fa,
+            wireframe: true
+        }
+    );
 
     var pyramid = new THREE.Mesh( pyramidgeometry, pyramidmaterial );
 
@@ -193,6 +154,7 @@ function changeImagePlane(id) {
 
     imageplane.visible = true;
 }
+
 //Useful for debugging
 function changeImagePlaneOrientation(Rx,Ry,Rz){
     imageplane.rotation.x = Rx * Math.PI/180;
@@ -224,11 +186,9 @@ function flyToCam(id){
             var xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
             viewer.scene.view.lookAt(xyzlookat);
         }
-    }
-    else{
+    } else {
         console.log(id.toString() + 'Out of Range (Max = ' + camX.length.toString() + ')')
     }
-
 }
 
 /**
@@ -303,7 +263,10 @@ function changeCameraOrientation(pitch,yaw){
     viewer.scene.view.pitch = pitch * Math.PI/180;
     viewer.scene.view.yaw = yaw * Math.PI/180;
 }
-// CHANGE CAMERA MODE
+
+/**
+ * CHANGE CAMERA MODE
+ */
 function changetoflymode() {
     viewer.setNavigationMode(Potree.OrbitControls);
 }
@@ -795,3 +758,5 @@ function uv2xyconstz(pixx,pixy,P){
 
     return [Xw, Yw, s];
 }
+
+export { makeImageFrustrum, makeImagePlane, onDocumentKeyPress, onDocumentMouseMove, onDocumentMouseClick };
