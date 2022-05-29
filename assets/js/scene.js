@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { isptincamera } from './addcameras';
 
 export class Scene {
   cameras = [];
@@ -80,7 +81,7 @@ export class Scene {
           let dist2obj = 99999;
           // loop thru intersected objects
           for (let i = 0; i < intersects.length; i++) {
-            console.log(intersects[i]);
+            // console.log(intersects[i]);
             // see if it has 5 vertices (pyramid)
             // if (intersects[i].object.geometry.vertices.length === 5) {
             if (intersects[i].object.children.length > 0) {
@@ -89,7 +90,7 @@ export class Scene {
                 dist2obj = intersects[i].distance;
                 if (this.INTERSECTED !== intersects[i].object) { // if it isnt the previous object
                     if (this.INTERSECTED) {
-                      this.INTERSECTED.material.color.setHex(sfm.INTERSECTED.currentHex); //change the old one back
+                      this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex); //change the old one back
                     }
 
                     this.INTERSECTED = intersects[i].object; //make this the new one
@@ -242,4 +243,87 @@ export class Scene {
 
     imageplane.visible = true;
   }
+
+  /**
+   * hide the thumbnails
+   */
+  turnImagesOff() {
+    if (this.camsvisible) {
+      const nimages = this.cameras.length;
+      this.camsvisible = false;
+      for (let j = 0; j < nimages; j++) {
+        this.cameras[j].visible = false;
+      }
+    }
+    // TODO: should find another place for this, perhaps fire event?
+    $('#cameraicon').removeClass('buttonfgclicked');
+  }
+
+  /**
+   * show the thumbnails
+   */
+  turnImagesOn(camPix, camFocal) {
+    if (!this.camsvisible) {
+        const nimages = this.cameras.length;
+        this.camsvisible = true;
+        for (let j = 0; j < nimages; j++) {
+          this.cameras[j].visible = true;
+        }
+        this.filterImages(camPix, camFocal);
+    }
+    // TODO: should find another place for this, perhaps fire event?
+    $('#cameraicon').addClass('buttonfgclicked');
+}
+
+  /**
+   * toggle the state of showing thumbnails
+   */
+ toggleImagesVisible() {
+    let nimages = this.cameras.length;
+    this.camsvisible = !this.camsvisible;
+    for (let j = 0; j < nimages; j++) {
+        this.cameras[j].visible = camsvisible;
+    }
+    wantcamsvisible = camsvisible; // ??
+  }
+
+  /**
+   *
+   * @param {*} camPix
+   * @param {*} camFocal
+   */
+  filterImages(camPix, camFocal) {
+    if (this.lookAtPtNum !== null & this.dofilterimages === true) {
+      const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
+
+      const Xw = xyzlookat.x;
+      const Yw = xyzlookat.y;
+      const Zw = xyzlookat.z;
+
+      // let testid = 1080;
+      const f = camFocal;
+      const cx = camPix[0] / 2;
+      const cy = camPix[1] / 2;
+
+      for (let imagenum = 0; imagenum < ncams; imagenum++) {
+        const c = this.cameras[imagenum];
+        const Xc = c.x;
+        const Yc = c.y;
+        const Zc = c.z;
+        const Rx = c.roll;
+        const Ry = c.pitch;
+        const Rz = c.yaw;
+
+        if (!isptincamera(f, cx, cy, Xc, Yc, Zc, Xw, Yw, Zw, Rx, Ry, Rz)) {
+          this.cameras[imagenum].visible = false;
+          this.cameras[imagenum].isFiltered = true;
+        } else {
+          this.cameras[imagenum].visible = true;
+          this.cameras[imagenum].isFiltered = false;
+        }
+        this.camsvisible = true;
+      }
+    }
+  }
+
 }

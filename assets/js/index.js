@@ -84,6 +84,8 @@ for (let imagenum = 0; imagenum < camX.length; imagenum++) {
     viewer.scene.scene.add(imageobj[imagenum]);
 }
 
+$('#btnimagenum').html(camX.length);
+
 // ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
 const imageplane = scene.cameras[0].makeImagePlane(
   camPix,
@@ -149,5 +151,26 @@ function onDocumentMouseClick(event) {
     }
   }
 }
+
+// UI Event Handlers
+$('#toggleimage').on('click', function (e) {
+  if (scene.camsvisible) {
+    if (scene.cameraplaneview) {
+      imageplane.visible = false;
+    } else {
+      scene.turnImagesOff();
+    }
+    this.camsvisible = false;
+    $('#cameraicon').removeClass('buttonfgclicked');
+  } else {
+    if (scene.cameraplaneview) {
+      imageplane.visible = true;
+    } else {
+      scene.turnImagesOn();
+    }
+    this.camsvisible = true;
+    $('#cameraicon').addClass('buttonfgclicked');
+  }
+});
 
 export { scene };

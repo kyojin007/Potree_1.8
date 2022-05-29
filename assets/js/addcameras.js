@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { scene } from './index';
 
 // Useful for debugging
 function changeImagePlaneOrientation(Rx,Ry,Rz){
@@ -8,50 +7,6 @@ function changeImagePlaneOrientation(Rx,Ry,Rz){
     imageplane.rotation.z = Rz * Math.PI/180;
 }
 
-
-/**
- * hide the thumbnails
- */
-function turnImagesOff(){
-  if (camsvisible) {
-    let nimages = imageobj.length;
-    let j = 0;
-    camsvisible = false;
-    for(let j=0; j < nimages; j++){
-        imageobj[j].visible = false;
-    }
-  }
-  $('#cameraicon').removeClass('buttonfgclicked');
-}
-
-/**
- * show the thumbnails
- */
-function turnImagesOn(camPix, camFocal) {
-    if(!imageobj[0].visible){
-        let nimages = imageobj.length;
-        let j=0;
-        camsvisible = true;
-        for(j=0;j<nimages;j++){
-            imageobj[j].visible=true;
-        }
-        filterImages(camPix, camFocal);
-    }
-    $('#cameraicon').addClass('buttonfgclicked');
-}
-
-/**
- * toggle the state of showing thumbnails
- */
-function toggleImagesVisible() {
-    let nimages = imageobj.length;
-    let j = 0;
-    camsvisible = !camsvisible;
-    for (let j=0; j < nimages; j++) {
-        imageobj[j].visible = camsvisible;
-    }
-    wantcamsvisible = camsvisible;
-}
 
 /**
  *
@@ -199,39 +154,6 @@ function measLookAt(){
     }
 }
 
-function filterImages(camPix, camFocal){
-  if (lookAtPtNum!=null & dofilterimages == true) {
-    xyzlookat = viewer.scene.measurements[lookAtPtNum].children[3].getWorldPosition();
-
-    var Xw = xyzlookat.x;
-    var Yw = xyzlookat.y;
-    var Zw = xyzlookat.z;
-
-    let testid = 1080;
-    var f = camFocal;
-    var cx = camPix[0] / 2;
-    var cy = camPix[1] / 2;
-
-    for (var imagenum = 0; imagenum < ncams; imagenum++) {
-        var Xc = camX[imagenum];
-        var Yc = camY[imagenum];
-        var Zc = camZ[imagenum];
-        var Rx = camRoll[imagenum];
-        var Ry = camPitch[imagenum];
-        var Rz = camYaw[imagenum];
-
-        if (!isptincamera(f, cx, cy, Xc, Yc, Zc, Xw, Yw, Zw, Rx, Ry, Rz)) {
-            imageobj[imagenum].visible = false;
-            imageobj[imagenum].isFiltered = true;
-        }
-        else {
-            imageobj[imagenum].visible = true;
-            imageobj[imagenum].isFiltered = false;
-        }
-        camsvisible = true;
-    }
-  }
-}
 
 /**
  * plots the camera position onto the Leaflet mini-map?
@@ -532,11 +454,27 @@ function calcEl(P,pixx,pixy){
     return el;
 }
 
+/**
+ *
+ * @param {*} f
+ * @param {*} cx
+ * @param {*} cy
+ * @param {*} Xc
+ * @param {*} Yc
+ * @param {*} Zc
+ * @param {*} Xw
+ * @param {*} Yw
+ * @param {*} Zw
+ * @param {*} Rx
+ * @param {*} Ry
+ * @param {*} Rz
+ * @returns
+ */
 function isptincamera(f,cx,cy,Xc,Yc,Zc,Xw,Yw,Zw,Rx,Ry,Rz) {
     // XYZ Euler Order
-    Rx = Rx * Math.PI/180;
-    Ry = Ry * Math.PI/180;
-    Rz = Rz * Math.PI/180;
+    Rx = Rx * Math.PI / 180;
+    Ry = Ry * Math.PI / 180;
+    Rz = Rz * Math.PI / 180;
 
     var pixx = (Xc*(cx*Math.sin(Ry) + f*Math.cos(Ry)*Math.cos(Rz)) - Xw*(cx*Math.sin(Ry) + f*Math.cos(Ry)*Math.cos(Rz)) + Zc*(f*(Math.sin(Rx)*Math.sin(Rz) - Math.cos(Rx)*Math.cos(Rz)*Math.sin(Ry)) + cx*Math.cos(Rx)*Math.cos(Ry)) - Zw*(f*(Math.sin(Rx)*Math.sin(Rz) - Math.cos(Rx)*Math.cos(Rz)*Math.sin(Ry)) + cx*Math.cos(Rx)*Math.cos(Ry)) + Yc*(f*(Math.cos(Rx)*Math.sin(Rz) + Math.cos(Rz)*Math.sin(Rx)*Math.sin(Ry)) - cx*Math.cos(Ry)*Math.sin(Rx)) - Yw*(f*(Math.cos(Rx)*Math.sin(Rz) + Math.cos(Rz)*Math.sin(Rx)*Math.sin(Ry)) - cx*Math.cos(Ry)*Math.sin(Rx)))/(Xc*Math.sin(Ry) - Xw*Math.sin(Ry) + Zc*Math.cos(Rx)*Math.cos(Ry) - Zw*Math.cos(Rx)*Math.cos(Ry) - Yc*Math.cos(Ry)*Math.sin(Rx) + Yw*Math.cos(Ry)*Math.sin(Rx));
     var pixy = (Xc*(cy*Math.sin(Ry) - f*Math.cos(Ry)*Math.sin(Rz)) - Xw*(cy*Math.sin(Ry) - f*Math.cos(Ry)*Math.sin(Rz)) + Zc*(f*(Math.cos(Rz)*Math.sin(Rx) + Math.cos(Rx)*Math.sin(Ry)*Math.sin(Rz)) + cy*Math.cos(Rx)*Math.cos(Ry)) - Zw*(f*(Math.cos(Rz)*Math.sin(Rx) + Math.cos(Rx)*Math.sin(Ry)*Math.sin(Rz)) + cy*Math.cos(Rx)*Math.cos(Ry)) + Yc*(f*(Math.cos(Rx)*Math.cos(Rz) - Math.sin(Rx)*Math.sin(Ry)*Math.sin(Rz)) - cy*Math.cos(Ry)*Math.sin(Rx)) - Yw*(f*(Math.cos(Rx)*Math.cos(Rz) - Math.sin(Rx)*Math.sin(Ry)*Math.sin(Rz)) - cy*Math.cos(Ry)*Math.sin(Rx)))/(Xc*Math.sin(Ry) - Xw*Math.sin(Ry) + Zc*Math.cos(Rx)*Math.cos(Ry) - Zw*Math.cos(Rx)*Math.cos(Ry) - Yc*Math.cos(Ry)*Math.sin(Rx) + Yw*Math.cos(Ry)*Math.sin(Rx));
@@ -555,4 +493,4 @@ function uv2xyconstz(pixx,pixy,P){
     return [Xw, Yw, s];
 }
 
-export { cameraOnMap };
+export { cameraOnMap, isptincamera };

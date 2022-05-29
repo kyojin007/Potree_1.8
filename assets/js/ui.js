@@ -54,28 +54,6 @@ $('#carouselExampleIndicators').on('slide.bs.carousel', function (ev) {
     $('#helpsubtitle').text(str);
 })
 
-$('#toggleimage').on('click', function (e) {
-    if(camsvisible){
-        if (cameraplaneview) {
-            imageplane.visible = false;
-        }
-        else {
-            turnImagesOff();
-        }
-        camsvisible = false;
-        $('#cameraicon').removeClass('buttonfgclicked');
-    }
-    else {
-        if (cameraplaneview) {
-            imageplane.visible = true;
-        }
-        else {
-            turnImagesOn();
-        }
-        camsvisible = true;
-        $('#cameraicon').addClass('buttonfgclicked');
-    }
-});
 
 $('#imgleft').on('click', function (e) {
     currentid--;
