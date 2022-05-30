@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 export class Camera {
-  constructor(imagePath, roll, pitch, yaw, x, y, z) {
+  constructor(thumbPath, imagePath, roll, pitch, yaw, x, y, z) {
+    this.thumbPath = thumbPath;
     this.imagePath = imagePath;
     this.roll = roll;
     this.pitch = pitch;
@@ -24,7 +25,7 @@ export class Camera {
     // instantiate a loader
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
-    const imagetexture = loader.load(this.imagePath);
+    const imagetexture = loader.load(this.thumbPath);
 
     const pixx = camPix[0] / camFocal;
     const pixy = camPix[1] / camFocal;

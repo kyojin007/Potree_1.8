@@ -13,17 +13,6 @@ function changeCameraOrientation(pitch,yaw){
     viewer.scene.view.yaw = yaw * Math.PI / 180;
 }
 
-/**
- * CHANGE CAMERA MODE
- */
-function changetoflymode() {
-    viewer.setNavigationMode(Potree.OrbitControls);
-}
-
-function changetoOrbitmode() {
-    viewer.setNavigationMode(Potree.FirstPersonControls);
-    viewer.fpControls.lockElevation = true;
-}
 
 /**
  *

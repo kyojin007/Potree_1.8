@@ -13,7 +13,8 @@ const camPitch = [-3.109,0.966,0.438,0.049,-0.274,-0.578,-0.883,-1.175,-2.600,-1
 const camYaw = [-151.839,-82.145,-82.137,-82.429,-83.022,-83.567,-84.182,-84.790,-85.374,-85.894,-86.420,-86.907,-88.023,-51.424,80.300,93.684,93.532,93.023,92.477,91.934,91.431,90.937,90.495,90.049,89.675,89.314,89.014,56.919,-87.849,-95.599,-96.311,-96.455,-96.677,-96.658,-96.678,-96.635,-96.587,-96.506,-96.454,-96.383,-96.311,-61.622,74.192,87.720,88.109,88.079,87.995,87.902,87.811,87.748,87.695,87.712,87.717,87.727,87.553,-134.428,-131.684,-119.569,-99.333,-76.475,-56.026,-41.433,-30.662,-22.552,-16.163,-10.885,-5.900,-1.120,3.734,8.713,14.127,20.236,27.734,37.994,51.299,69.394,90.932,112.126,128.861,142.287,152.251,159.822,165.961,171.309,176.414,-178.972,-173.811,-168.719,-162.777,-156.119,-147.208,-135.944,0.592,-0.271,-4.197,-4.872,-0.272,-0.048,-15.680,-125.714,-84.798,-89.049,-89.424,-135.334,-51.441,-21.845,-8.089,-8.256];
 const camFocal = 4552.94;
 const camPix = [5280,3956];
-const thumbs = '02_THUMBNAILS/';
+const thumbs = '02_THUMBNAILS';
+const images = '01_IMAGES';
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -61,7 +62,8 @@ document.addEventListener('keydown', onDocumentKeyPress, false);
 // ADD PYRAMIDS TO SCENE
 for (let imagenum = 0; imagenum < camX.length; imagenum++) {
     const c = new Camera(
-        camdir + thumbs + camname[imagenum],
+        camdir + thumbs + '/' + camname[imagenum],
+        camdir + images + '/' + camname[imagenum],
         camRoll[imagenum],
         camPitch[imagenum],
         camYaw[imagenum],
@@ -91,12 +93,7 @@ $('#btnimagenum').html(camX.length);
 scene.currentid = 0;
 
 // ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
-const imageplane = scene.cameras[0].makeImagePlane(
-  camPix,
-  camFocal
-);
-viewer.scene.scene.add(imageplane);
-imageplane.visible = false;
+scene.addImagePlane(camPix, camFocal);
 
 //checks if user moved the screen, and therefore imageplane should be turned off
 setInterval(scene.checkMovement, 10000);
@@ -165,7 +162,7 @@ $('#toggleimage').on('click', function (e) {
   console.log('toggle images %o %o', scene.camsvisible, scene.cameraplaneview);
   if (scene.camsvisible) {
     if (scene.cameraplaneview) {
-      imageplane.visible = false;
+      scene.imageplane.visible = false;
     } else {
       scene.turnImagesOff();
     }
@@ -173,7 +170,7 @@ $('#toggleimage').on('click', function (e) {
     $('#cameraicon').removeClass('buttonfgclicked');
   } else {
     if (scene.cameraplaneview) {
-      imageplane.visible = true;
+      scene.imageplane.visible = true;
     } else {
       scene.turnImagesOn();
     }

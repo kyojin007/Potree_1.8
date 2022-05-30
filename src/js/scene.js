@@ -16,8 +16,10 @@ export class Scene {
   lookAtPtNum = null;
   dofilterimages = false;
   lastLookAtPt = [0, 0, 0];
+  camdir = '';
+  imageplane = null;
 
-  constructor(target) {
+  constructor(target, camdir) {
     this.viewer = new Potree.Viewer(document.getElementById(target));
     this.viewer.setEDLEnabled(true);
     this.viewer.setFOV(60);
@@ -25,6 +27,8 @@ export class Scene {
     this.viewer.setEDLEnabled(false);
     this.viewer.setBackground("gradient"); // ["skybox", "gradient", "black", "white"];
     this.viewer.loadSettingsFromURL();
+
+    this.camdir = camdir;
   }
 
   addCamera(camera) {
@@ -34,6 +38,17 @@ export class Scene {
   addFrustrum(obj, i) {
     this.frustrum[i] = obj;
     this.viewer.scene.scene.add(obj);
+  }
+
+  addImagePlane(camPix, camFocal) {
+    if (this.cameras.length > 0) {
+      this.imageplane = this.cameras[0].makeImagePlane(
+        camPix,
+        camFocal
+      );
+      this.viewer.scene.scene.add(this.imageplane);
+      this.imageplane.visible = false;
+    }
   }
 
   get ncams() {
@@ -135,20 +150,24 @@ export class Scene {
   flyToCam(id) {
     console.log('flyToCam(%i)', id);
 
+    const cam = this.cameras[id];
+
     if (id < this.ncams) {
-        imageplane.visible = false;
+        this.imageplane.visible = false;
         this.viewer.fpControls.stop();
-        changetoOrbitmode();
-        moveCamera(id);
-        changeImagePlane(id);
+        this.changeToOrbitMode();
+        this.moveCamera(id);
+        this.changeImagePlane(id);
+
         this.lastXYZ= [
-          Math.round(camX[id]*100)/100,
-          Math.round(camY[id]*100)/100,
-          Math.round(camZ[id]*100)/100
+          Math.round(cam.x * 100) / 100,
+          Math.round(cam.y * 100) / 100,
+          Math.round(cam.z * 100) / 100
         ];
+
         $('#toggleimageplane').removeClass('disabled');
         $('#togglecam').addClass('disabled');
-        turnImagesOff();
+        this.turnImagesOff();
         this.currentid = id;
         this.cameraplaneview = true;
         this.camsvisible = true;
@@ -205,10 +224,10 @@ export class Scene {
     if (cameraplaneview) {
       const currentXYZ = getCurrentPos();
       if (currentXYZ[0] != this.lastXYZ[0] || currentXYZ[1] != this.lastXYZ[1] || currentXYZ[2] != this.lastXYZ[2]) {
-        imageplane.visible=false;
-        changetoflymode();
+        this.imageplane.visible=false;
+        this.changeToFlyMode();
         if (camsvisible | cameraplaneview) {
-          turnImagesOn();
+          this.turnImagesOn();
         }
         this.cameraplaneview = false;
         // fix issue where radius was crazy far away
@@ -234,28 +253,28 @@ export class Scene {
    * @param {*} id
    */
   changeImagePlane(id) {
+    const camera = this.cameras[id];
+
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
     // clear thumbnail content
-    imageplane.children[0].material.dispose();
+    this.imageplane.children[0].material.dispose();
     // load full sized image
-    imageplane.children[0].material.map = loader.load(camdir + '01_IMAGES/' + camname[id]);
+    this.imageplane.children[0].material.map = loader.load(camera.imagePath);
 
-    const camera = this.cameras[id];
+    this.imageplane.position.x = camera.x;
+    this.imageplane.position.y = camera.y;
+    this.imageplane.position.z = camera.z;
 
-    imageplane.position.x = camera.x;
-    imageplane.position.y = camera.y;
-    imageplane.position.z = camera.z;
+    this.imageplane.rotation.x = camera.roll * Math.PI / 180;
+    this.imageplane.rotation.y = camera.pitch * Math.PI / 180;
+    this.imageplane.rotation.z = camera.yaw * Math.PI / 180;
 
-    imageplane.rotation.x = camera.roll * Math.PI / 180;
-    imageplane.rotation.y = camera.pitch * Math.PI / 180;
-    imageplane.rotation.z = camera.yaw * Math.PI / 180;
+    this.imageplane.scale.x = this.SCALEIMG;
+    this.imageplane.scale.y = this.SCALEIMG;
+    this.imageplane.scale.z = this.SCALEIMG;
 
-    imageplane.scale.x = scene.SCALEIMG;
-    imageplane.scale.y = scene.SCALEIMG;
-    imageplane.scale.z = scene.SCALEIMG;
-
-    imageplane.visible = true;
+    this.imageplane.visible = true;
   }
 
   /**
@@ -370,4 +389,19 @@ export class Scene {
     // viewer.scene.view.yaw = camYaw[id] * Math.PI/180;
     // viewer.fpControls.stop();
   }
+
+  /**
+   * CHANGE CAMERA MODE
+   */
+  changeToFlyMode() {
+    // this.viewer.setNavigationMode(Potree.OrbitControls);
+    this.viewer.changeToOrbitMode;
+  }
+
+  changeToOrbitMode() {
+    //this.viewer.setNavigationMode(Potree.FirstPersonControls);
+    this.viewer.changeToFlyMode;
+    this.viewer.fpControls.lockElevation = true;
+  }
+
 }
