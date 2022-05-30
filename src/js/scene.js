@@ -3,6 +3,7 @@ import { isptincamera } from './addcameras';
 
 export class Scene {
   cameras = [];
+  frustrum = [];
   SCALEIMG = 3;
   mouse = { x: 0, y: 0, doUse: false };
   INTERSECTED = null;
@@ -11,8 +12,6 @@ export class Scene {
   lastXYZ = [0, 0, 0];
   raycaster = new THREE.Raycaster();
   wantcamsvisible = true;
-  // ncams = camX.length;
-  // sfm.currentid = sfm.ncams - 1;
   mapshow = true;
   lookAtPtNum = null;
   dofilterimages = false;
@@ -29,17 +28,30 @@ export class Scene {
   }
 
   addCamera(camera) {
-      this.cameras.push(camera);
+    this.cameras.push(camera);
+  }
+
+  addFrustrum(obj, i) {
+    this.frustrum[i] = obj;
+    this.viewer.scene.scene.add(obj);
   }
 
   get ncams() {
     return this.cameras.length;
   }
   get currentid() {
-    return this.cameras.length - 1;
+    return this._currentid;
   }
   set currentid(id) {
-    this.currentid = id;
+    // loop around if we reach either end of available cameras
+    if (id > (this.ncams - 1)) {
+      id = 0;
+    }
+    if (id < 0) {
+      id = this.ncams - 1;
+    }
+
+    this._currentid = id;
   }
 
   // RETURN CURRENT CAMERA POSITION [X, Y, Z]
@@ -57,11 +69,11 @@ export class Scene {
    */
   get cameraXYZPT() {
     return {
-        x: this.viewer.scene.view.position.x,
-        y: this.viewer.scene.view.position.y,
-        z: this.viewer.scene.view.position.z,
-        yaw: this.viewer.scene.view.yaw,
-        pitch: this.viewer.scene.view.pitch
+      x: this.viewer.scene.view.position.x,
+      y: this.viewer.scene.view.position.y,
+      z: this.viewer.scene.view.position.z,
+      yaw: this.viewer.scene.view.yaw,
+      pitch: this.viewer.scene.view.pitch
     }
   }
 
@@ -73,40 +85,40 @@ export class Scene {
     const viewer = this.viewer;
 
     if (this.mouse.doUse) {
-        raycaster.setFromCamera(this.mouse, viewer.scene.cameraP);
+      raycaster.setFromCamera(this.mouse, viewer.scene.cameraP);
 
-        // calculate objects intersecting the picking ray
-        const intersects = raycaster.intersectObjects(viewer.scene.scene.children, true);
-        if (intersects.length > 0) {
-          let dist2obj = 99999;
-          // loop thru intersected objects
-          for (let i = 0; i < intersects.length; i++) {
-            // console.log(intersects[i]);
-            // see if it has 5 vertices (pyramid)
-            // if (intersects[i].object.geometry.vertices.length === 5) {
-            if (intersects[i].object.children.length > 0) {
-              // if it does, see if it's closer than the last distance
-              if (intersects[i].distance < dist2obj) {
-                dist2obj = intersects[i].distance;
-                if (this.INTERSECTED !== intersects[i].object) { // if it isnt the previous object
-                    if (this.INTERSECTED) {
-                      this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex); //change the old one back
-                    }
-
-                    this.INTERSECTED = intersects[i].object; //make this the new one
-                    this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex(); // get its color
-                    intersects[i].object.material.color.set(0xff0000); // change it's color
+      // calculate objects intersecting the picking ray
+      const intersects = raycaster.intersectObjects(viewer.scene.scene.children, true);
+      if (intersects.length > 0) {
+        let dist2obj = 99999;
+        // loop thru intersected objects
+        for (let i = 0; i < intersects.length; i++) {
+          // console.log(intersects[i]);
+          // see if it has 5 vertices (pyramid)
+          // if (intersects[i].object.geometry.vertices.length === 5) {
+          if (intersects[i].object.children.length > 0) {
+            // if it does, see if it's closer than the last distance
+            if (intersects[i].distance < dist2obj) {
+              dist2obj = intersects[i].distance;
+              if (this.INTERSECTED !== intersects[i].object) { // if it isnt the previous object
+                if (this.INTERSECTED) {
+                  this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex); //change the old one back
                 }
+
+                this.INTERSECTED = intersects[i].object; //make this the new one
+                this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex(); // get its color
+                intersects[i].object.material.color.set(0xff0000); // change it's color
               }
             }
           }
-        } else {
-          if (this.INTERSECTED) {
-            this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
-          }
-          this.INTERSECTED = null;
         }
-        // renderer.render( scene, camera );
+      } else {
+        if (this.INTERSECTED) {
+          this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+        }
+        this.INTERSECTED = null;
+      }
+      // renderer.render( scene, camera );
     } else {
       if (this.INTERSECTED) {
         this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
@@ -121,6 +133,8 @@ export class Scene {
    * @param {*} id
    */
   flyToCam(id) {
+    console.log('flyToCam(%i)', id);
+
     if (id < this.ncams) {
         imageplane.visible = false;
         this.viewer.fpControls.stop();
@@ -252,7 +266,7 @@ export class Scene {
       const nimages = this.cameras.length;
       this.camsvisible = false;
       for (let j = 0; j < nimages; j++) {
-        this.cameras[j].visible = false;
+        this.frustrum[j].visible = false;
       }
     }
     // TODO: should find another place for this, perhaps fire event?
@@ -267,7 +281,7 @@ export class Scene {
         const nimages = this.cameras.length;
         this.camsvisible = true;
         for (let j = 0; j < nimages; j++) {
-          this.cameras[j].visible = true;
+          this.frustrum[j].visible = true;
         }
         this.filterImages(camPix, camFocal);
     }
@@ -282,7 +296,7 @@ export class Scene {
     let nimages = this.cameras.length;
     this.camsvisible = !this.camsvisible;
     for (let j = 0; j < nimages; j++) {
-        this.cameras[j].visible = camsvisible;
+        this.frustrum[j].visible = camsvisible;
     }
     wantcamsvisible = camsvisible; // ??
   }
@@ -326,4 +340,34 @@ export class Scene {
     }
   }
 
+  /**
+   *
+   * @param {*} id
+   */
+  moveCamera(id) {
+    const cam = this.cameras[id];
+    this.viewer.scene.view.position.x = cam.x;
+    this.viewer.scene.view.position.y = cam.y;
+    this.viewer.scene.view.position.z = cam.z;
+
+    let a = new THREE.Euler(
+      cam.roll * Math.PI / 180,
+      cam.pitch * Math.PI / 180,
+      cam.yaw * Math.PI / 180,
+      'XYZ'
+    );
+
+    let b = new THREE.Vector3(0, 0, -1);
+    b.applyEuler(a);
+    b.x = b.x + cam.x;
+    b.y = b.y + cam.y;
+    b.z = b.z + cam.z;
+
+    //var lookatpt = [camX[id]+b.x, camY[id]+b.y, camZ[id]+b.z];
+    this.viewer.scene.view.lookAt(b);
+
+    // viewer.scene.view.pitch = (camRoll[id] -90)* Math.PI/180;
+    // viewer.scene.view.yaw = camYaw[id] * Math.PI/180;
+    // viewer.fpControls.stop();
+  }
 }

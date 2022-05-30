@@ -8,30 +8,6 @@ function changeImagePlaneOrientation(Rx,Ry,Rz){
 }
 
 
-/**
- *
- * @param {*} id
- */
-function moveCamera(id) {
-    viewer.scene.view.position.x = camX[id];
-    viewer.scene.view.position.y = camY[id];
-    viewer.scene.view.position.z = camZ[id];
-
-    let a = new THREE.Euler(camRoll[id]*Math.PI/180,camPitch[id]*Math.PI/180,camYaw[id]*Math.PI/180,'XYZ');
-    let b = new THREE.Vector3( 0, 0, -1 );
-    b.applyEuler(a);
-    b.x = b.x + camX[id];
-    b.y = b.y + camY[id];
-    b.z = b.z + camZ[id];
-
-    //var lookatpt = [camX[id]+b.x, camY[id]+b.y, camZ[id]+b.z];
-    viewer.scene.view.lookAt(b);
-
-    // viewer.scene.view.pitch = (camRoll[id] -90)* Math.PI/180;
-    // viewer.scene.view.yaw = camYaw[id] * Math.PI/180;
-    // viewer.fpControls.stop();
-}
-
 function changeCameraOrientation(pitch,yaw){
     viewer.scene.view.pitch = pitch * Math.PI / 180;
     viewer.scene.view.yaw = yaw * Math.PI / 180;
@@ -484,6 +460,13 @@ function isptincamera(f,cx,cy,Xc,Yc,Zc,Xw,Yw,Zw,Rx,Ry,Rz) {
     return isgood
 }
 
+/**
+ *
+ * @param {*} pixx
+ * @param {*} pixy
+ * @param {*} P
+ * @returns
+ */
 function uv2xyconstz(pixx,pixy,P){
     //assumes Zw = 0;
     var Xw = (P[0][1]*P[1][3] - P[0][3]*P[1][1] - P[0][1]*P[2][3]*pixy + P[0][3]*P[2][1]*pixy + P[1][1]*P[2][3]*pixx - P[1][3]*P[2][1]*pixx)/(P[0][0]*P[1][1] - P[0][1]*P[1][0] - P[0][0]*P[2][1]*pixy + P[0][1]*P[2][0]*pixy + P[1][0]*P[2][1]*pixx - P[1][1]*P[2][0]*pixx);

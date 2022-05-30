@@ -54,59 +54,6 @@ $('#carouselExampleIndicators').on('slide.bs.carousel', function (ev) {
     $('#helpsubtitle').text(str);
 })
 
-
-$('#imgleft').on('click', function (e) {
-    currentid--;
-    if (currentid < 0) {
-        currentid = ncams - 1;
-    }
-    var count=0;
-    var flag = true;
-    if (dofilterimages) {
-        while (imageobj[currentid].isFiltered) {
-            currentid--;
-            count++;
-            if (currentid < 0) {
-                currentid = ncams - 1;
-            }
-            if (count > ncams) {
-                flag = false;
-                break;
-            }
-        }
-    }
-    if (flag) {
-        flyToCam(currentid);
-    }
-});
-
-$('#imgright').on('click', function (e) {
-
-    currentid++;
-    if (currentid>(ncams-1)){currentid=0;}
-
-    var count=0;
-    var flag = true;
-    if (dofilterimages) {
-        while (imageobj[currentid].isFiltered) {
-            currentid++;
-            count++;
-            if (currentid > (ncams - 1)) {
-                currentid = 0;
-            }
-
-            if (count > ncams) {
-                flag = false;
-                break;
-            }
-        }
-    }
-    if (flag) {
-        flyToCam(currentid);
-    }
-
-});
-
 $('#measPoint').on('click', measPoint);
 $('#measDistance').on('click', measDistance);
 $('#measHeight').on('click', measHeight);

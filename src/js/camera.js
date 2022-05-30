@@ -112,4 +112,11 @@ export class Camera {
     return imagepyramid
   }
 
+  showCamera(viewer) {
+    viewer.scene.scene.remove(this);
+  }
+
+  hideCamera(viewer) {
+
+  }
 }

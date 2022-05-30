@@ -59,7 +59,6 @@ document.addEventListener('mousedown', onDocumentMouseClick, false);
 document.addEventListener('keydown', onDocumentKeyPress, false);
 
 // ADD PYRAMIDS TO SCENE
-var imageobj = Array(camX.length);
 for (let imagenum = 0; imagenum < camX.length; imagenum++) {
     const c = new Camera(
         camdir + thumbs + camname[imagenum],
@@ -73,18 +72,23 @@ for (let imagenum = 0; imagenum < camX.length; imagenum++) {
 
     scene.addCamera(c);
 
-    imageobj[imagenum] = c.makeImageFrustrum(
+    scene.addFrustrum(
+      c.makeImageFrustrum(
         camPix,
         camFocal,
         scene.SCALEIMG
+      ), imagenum
     );
 
+    /*
     imageobj[imagenum].myimagenum = imagenum;
     imageobj[imagenum].isFiltered = false;
     viewer.scene.scene.add(imageobj[imagenum]);
+    */
 }
 
 $('#btnimagenum').html(camX.length);
+scene.currentid = 0;
 
 // ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
 const imageplane = scene.cameras[0].makeImagePlane(
@@ -123,6 +127,7 @@ function onDocumentMouseMove(event) {
   // (such as the mouse's TrackballControls)
   // event.preventDefault();
 
+  // TODO: do we really need this for every mouse move! should just be required on click?
   // update the mouse variable
   scene.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   scene.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -134,7 +139,7 @@ function onDocumentMouseMove(event) {
     elementType = 'ERROR';
   }
 
-  scene.mouse.doUse = elementType == 'CANVAS';
+  scene.mouse.doUse = elementType === 'CANVAS';
   // did we click over an image?
   scene.checkIntersections();
 }
@@ -144,16 +149,20 @@ function onDocumentMouseMove(event) {
  * @param {*} event
  */
 function onDocumentMouseClick(event) {
+  console.log(event, scene.mouse);
+  // doUse is enabled if we click on the CANVAS
   if (scene.mouse.doUse && event.button === 0) {
     if (scene.INTERSECTED !== null) {
       flytoimagenum = scene.INTERSECTED.parent.myimagenum;
-      flyToCam(flytoimagenum);
+      scene.flyToCam(flytoimagenum);
     }
   }
 }
 
 // UI Event Handlers
 $('#toggleimage').on('click', function (e) {
+  e.preventDefault();
+  console.log('toggle images %o %o', scene.camsvisible, scene.cameraplaneview);
   if (scene.camsvisible) {
     if (scene.cameraplaneview) {
       imageplane.visible = false;
@@ -172,5 +181,55 @@ $('#toggleimage').on('click', function (e) {
     $('#cameraicon').addClass('buttonfgclicked');
   }
 });
+
+$('#imgleft').on('click', function (e) {
+  scene.currentid--;
+  console.log('previous image: %i', scene.currentid);
+
+  let count = 0;
+  let flag = true;
+  if (scene.dofilterimages) {
+      while (scene.frustrum[scene.currentid].isFiltered) {
+          scene.currentid--;
+          count++;
+          if (currentid < 0) {
+            currentid = scene.ncams - 1;
+          }
+
+          if (count > scene.ncams) {
+            flag = false;
+            break;
+          }
+      }
+  }
+
+  if (flag) {
+    scene.flyToCam(scene.currentid);
+  }
+});
+
+$('#imgright').on('click', function (e) {
+  scene.currentid++;
+  console.log('previous image: %i', scene.currentid);
+
+  let count = 0;
+  let flag = true;
+
+  if (scene.dofilterimages) {
+    while (scene.frustrum[scene.currentid].isFiltered) {
+      scene.currentid++;
+      count++;
+
+      if (count > scene.ncams) {
+        flag = false;
+        break;
+      }
+    }
+  }
+  if (flag) {
+    scene.flyToCam(scene.currentid);
+  }
+});
+
 
 export { scene };

@@ -78,263 +78,269 @@
 
     <!-- configuration -->
     <!-- <script src="assets/js/03_POSES/cameras.js"></script> -->
-    <script type="module" src="dist/main.js"></script>
+    <script type="module" src="main.js"></script>
 </head>
 
 <body>
 
 <!-- Bootstrap Layout -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0" style="z-index:100;">
-    <a class="navbar-brand" href="#">
-        <img src="assets/images/logoOSU2.png"  height="50px" class="d-inline-block align-top">
-    </a>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="assets/images/logoOSU2.png" height="50px" class="d-inline-block align-top">
+        </a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbarContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="d-flex justify-content-left nav-item">
-        <span class="navbar-text"><h2> Steel Point, BVI</h2></span>
-    </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="mainNavbarContent">
+            <div class="d-flex justify-content-left nav-item">
+                <span class="navbar-text"><h2>Steel Point, BVI</h2></span>
+            </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <!--Create class ml-auto for the navbar items you want on the right.-->
-        <ul class="navbar-nav ml-auto" >
-            <!--Previous Image Arrow-->
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="imgleft">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-arrow-left fa-stack-1x buttonfg"></i>
-                    </span>
-                </a>
-            </li>
-
-            <!--Toggle Image -->
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="toggleimage">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i id="cameraicon" class="fa fa-camera fa-stack-1x buttonfg buttonfgclicked"></i>
-                        <strong class="fa-stack-1x cameranumber" id="btnimagenum">0</strong>
-                    </span>
-                </a>
-            </li>
-
-            <!--Next Image Arrow -->
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="imgright">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-arrow-right fa-stack-1x buttonfg"></i>
-                    </span>
-                </a>
-            </li>
-
-            <!-- Toggle Map-->
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="togglemap">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i id="mapbutton" class="fa fa-map fa-stack-1x buttonfg buttonfgclicked"></i>
-                    </span>
-                </a>
-            </li>
-
-            <!-- Tools-->
-            <li class="nav-item dropdown keep-open">
-                <a class="nav-link" href="#" role="button" data-toggle="dropdown" >
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
-                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                    </span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <!--use font awesome icons-->
-                    <a id="measheader" class="dropdown-item navbar-text" href="#"> <strong><span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
-                    </span>Measurements</strong> </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item navbar-text" href="#" id="measPoint"> <i class="fa fa-bullseye fa-fw fa-lg"></i> Point </a>
-                    <a class="dropdown-item navbar-text" href="#" id="measDistance"> <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance </a>
-                    <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
-                    <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
-                    <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
-                    <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
-                    <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
-                    <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
-                </div>
-            </li>
-
-            <!-- Appearance-->
-            <li class="nav-item dropdown keep-open">
-                <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
-                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right" >
-                    <li id="appearanceheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+            <!--Create class ml-auto for the navbar items you want on the right.-->
+            <ul class="navbar-nav ml-auto" >
+                <!--Previous Image Arrow-->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="imgleft">
                         <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-arrow-left fa-stack-1x buttonfg"></i>
                         </span>
-                        Appearance</strong> </a></li>
-                    <li><div class="dropdown-divider"></div></li>
-                    <li><a id="btntogglelighting" class="dropdown-item navbar-text" href="#">
-                        <i id="btnlightbulb" class="fa fa-lightbulb-o fa-fw fa-lg "></i>
-                        Toggle Lighting </a>
-                    </li>
+                    </a>
+                </li>
 
-                    <li><a id="btntoggleHQ" class="dropdown-item navbar-text" href="#">
-                        <i id="btnHQ" class="fa fa-star fa-fw fa-lg "></i>
-                        Toggle HQ Points</a>
-                    </li>
+                <!--Toggle Image -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="toggleimage">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i id="cameraicon" class="fa fa-camera fa-stack-1x buttonfg buttonfgclicked"></i>
+                            <strong class="fa-stack-1x cameranumber" id="btnimagenum">0</strong>
+                        </span>
+                    </a>
+                </li>
 
+                <!--Next Image Arrow -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="imgright">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-arrow-right fa-stack-1x buttonfg"></i>
+                        </span>
+                    </a>
+                </li>
 
-                    <li><div class="dropdown-divider"></div></li>
+                <!-- Toggle Map-->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="togglemap">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i id="mapbutton" class="fa fa-map fa-stack-1x buttonfg buttonfgclicked"></i>
+                        </span>
+                    </a>
+                </li>
 
-                    <li>
-                        <a class="dropdown-item navbar-text" href="#">
+                <!-- Tools-->
+                <li class="nav-item dropdown keep-open">
+                    <a class="nav-link dropdown-toggle" href="#"
+                            role="button" data-bs-toggle="dropdown" >
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
+                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <!--use font awesome icons-->
+                        <a id="measheader" class="dropdown-item navbar-text" href="#"> <strong><span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
+                        </span>Measurements</strong> </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item navbar-text" href="#" id="measPoint"> <i class="fa fa-bullseye fa-fw fa-lg"></i> Point </a>
+                        <a class="dropdown-item navbar-text" href="#" id="measDistance"> <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance </a>
+                        <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
+                        <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
+                        <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
+                        <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
+                        <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
+                        <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
+                    </div>
+                </li>
+
+                <!-- Appearance-->
+                <li class="nav-item dropdown keep-open">
+                    <a class="nav-link dropdown-toggle" href="#"
+                            role="button" data-bs-toggle="dropdown" >
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" >
+                        <li id="appearanceheader">
+                            <a class="dropdown-item navbar-text" href="#">
+                                <strong>
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                                    </span>
+                                    Appearance
+                                </strong>
+                            </a>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a id="btntogglelighting" class="dropdown-item navbar-text" href="#">
+                                <i id="btnlightbulb" class="fa fa-lightbulb-o fa-fw fa-lg "></i>
+                                Toggle Lighting
+                            </a>
+                        </li>
+                        <li>
+                            <a id="btntoggleHQ" class="dropdown-item navbar-text" href="#">
+                                <i id="btnHQ" class="fa fa-star fa-fw fa-lg "></i>
+                                Toggle HQ Points
+                            </a>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a class="dropdown-item navbar-text" href="#">
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
+                                    <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
+                                </div>
+                                <div id="sliderPointBudget"></div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item navbar-text" href="#">
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
+                                    <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
+                                </div>
+                                <div id="sliderPointSize"></div>
+                            </a>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li class="dropdown-item navbar-text">
                             <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
-                                <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
+                                <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
+                                <input id="colorblendValue" type="text" class="form-control" placeholder="0">
                             </div>
-                            <div id="sliderPointBudget"></div>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item navbar-text" href="#">
-                            <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
-                                <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
-                            </div>
-                            <div id="sliderPointSize"></div>
-                        </a>
-                    </li>
-
-                    <li><div class="dropdown-divider"></div></li>
-
-                    <li class="dropdown-item navbar-text">
-                        <div class="input-group">
-                            <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
-                            <input id="colorblendValue" type="text" class="form-control" placeholder="0">
-                        </div>
-                        <div id="sliderColorBlend"></div>
-                        <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
-                            <button id="btnRGB" type="button" class="btn btn-secondary" >RGB</button>
-                            <button id="btnBoth" type="button" class="btn btn-secondary" >Both</button>
-                            <button id="btnElev" type="button" class="btn btn-secondary" >Elev</button>
-                        </div>
-                    </li>
-
-                    <li><div class="dropdown-divider"></div></li>
-
-                    <li>
-                        <a class="dropdown-item navbar-text" href="#">
-                            Elevation Range: <br>
-                            <div id="slider-range"></div>
-                            <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Min:</span>
-                                <input id="minval" type="text" class="form-control" name="email" placeholder="0">
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Max:</span>
-                                <input id="maxval" type="text" class="form-control" name="password" placeholder="10">
-                            </div>
-                        </a>
-                    </li>
-
-                    <li><div class="dropdown-divider"></div></li>
-
-                    <li>
-                        <a class="dropdown-item navbar-text" href="#">
-                            Colormap: <br>
+                            <div id="sliderColorBlend"></div>
                             <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
-                                <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
-                                <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
+                                <button id="btnRGB" type="button" class="btn btn-secondary" >RGB</button>
+                                <button id="btnBoth" type="button" class="btn btn-secondary" >Both</button>
+                                <button id="btnElev" type="button" class="btn btn-secondary" >Elev</button>
                             </div>
-                        </a>
-                    </li>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a class="dropdown-item navbar-text" href="#">
+                                Elevation Range: <br>
+                                <div id="slider-range"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Min:</span>
+                                    <input id="minval" type="text" class="form-control" name="email" placeholder="0">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Max:</span>
+                                    <input id="maxval" type="text" class="form-control" name="password" placeholder="10">
+                                </div>
+                            </a>
+                        </li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li>
+                            <a class="dropdown-item navbar-text" href="#">
+                                Colormap: <br>
+                                <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
+                                    <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item navbar-text" href="#">
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Image Opacity:</span>
+                                    <input id="sliderImageOpacityValue" type="text" class="form-control" placeholder="100%">
+                                </div>
+                                <div id="sliderImageOpacity"></div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
-                    <li>
-                        <a class="dropdown-item navbar-text" href="#">
-                            <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Image Opacity:</span>
-                                <input id="sliderImageOpacityValue" type="text" class="form-control" placeholder="100%">
-                            </div>
-
-                            <div id="sliderImageOpacity"></div>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- Download
-
-            <li class="nav-item dropdown keep-open">
-                <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-download fa-stack-1x buttonfg"></i>
-                        <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right" >
-                    <li id="downloadheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+                <!--
+                <li class="nav-item dropdown keep-open">
+                    <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
                         <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
                         </span>
-                        Download Data</strong> </a></li>
-                    <li><div class="dropdown-divider"></div></li>
-                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_las.txt">
-                        <i class="fa fa-cloud fa-fw fa-lg "></i>
-                        Pointcloud</a>
-                    </li>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" >
+                        <li id="downloadheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+                            <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                            </span>
+                            Download Data</strong> </a></li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_las.txt">
+                            <i class="fa fa-cloud fa-fw fa-lg "></i>
+                            Pointcloud</a>
+                        </li>
 
-                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_ortho.txt">
-                        <i class="fa fa-image fa-fw fa-lg "></i>
-                        Orthophoto</a>
-                    </li>
+                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_ortho.txt">
+                            <i class="fa fa-image fa-fw fa-lg "></i>
+                            Orthophoto</a>
+                        </li>
 
-                    <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_meta.txt">
-                        <i class="fa fa-file fa-fw fa-lg "></i>
-                        Metadata</a>
-                    </li>
-                </ul>
-            </li> -->
-
-            <!-- Info
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#infomodal">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-info fa-stack-1x buttonfg"></i>
-                    </span>
-                </a>
-            </li>-->
-            <!-- Help
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#helpmodal" onclick="$('#carouselExampleIndicators').carousel(0);">
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                        <i class="fa fa-question fa-stack-1x buttonfg"></i>
-                    </span>
-                </a>
-            </li>-->
-        </ul>
+                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_meta.txt">
+                            <i class="fa fa-file fa-fw fa-lg "></i>
+                            Metadata</a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#infomodal">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-info fa-stack-1x buttonfg"></i>
+                        </span>
+                    </a>
+                </li>
+                -->
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#helpmodal" onclick="$('#carouselExampleIndicators').carousel(0);">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                            <i class="fa fa-question fa-stack-1x buttonfg"></i>
+                        </span>
+                    </a>
+                </li>
+                -->
+            </ul>
+        </div>
     </div>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
 </nav>
 
 <div id="mapcontainer" class="leaflet_map_container">
