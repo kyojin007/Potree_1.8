@@ -249,6 +249,7 @@ export class Scene {
   }
 
   /**
+   * place the full sized images into the imageplane and orientate
    *
    * @param {*} id
    */
@@ -257,7 +258,7 @@ export class Scene {
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
-    // clear thumbnail content
+    // clear previous content
     this.imageplane.children[0].material.dispose();
     // load full sized image
     this.imageplane.children[0].material.map = loader.load(camera.imagePath);
