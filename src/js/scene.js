@@ -157,7 +157,7 @@ export class Scene {
   }
 
   /**
-   * reposition the global camera position
+   * reposition the global camera position to one of our image cameras
    *
    * @param {*} id
    */
@@ -187,20 +187,24 @@ export class Scene {
         ];
 
         // these don't seem to be in use
+        /*
         $('#toggleimageplane').removeClass('disabled');
         $('#togglecam').addClass('disabled');
+        */
 
         // turn off the camera position thumbnails
         this.turnImagesOff();
+
+        // store details
         this.currentid = id;
         this.cameraplaneview = true;
-        this.camsvisible = true;
+        // this.camsvisible = true;
 
         // add the selected image number to the button
+        // TODO: move outside the class
         $('#btnimagenum').text(id.toString());
 
         // TODO: work out what this does
-        $('#cameraicon').addClass('buttonfgclicked');
         if (this.lookAtPtNum !== null) {
             const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
             this.viewer.scene.view.lookAt(xyzlookat);
@@ -249,10 +253,11 @@ export class Scene {
    */
   changeImagePlane(id) {
     const camera = this.cameras[id];
-    console.log('changeImagePlane(%i) %o', id, camera)
+    console.log('changeImagePlane(%i) %o', id, this.imageplane)
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
+
     // clear previous content
     this.imageplane.children[0].material.dispose();
     // load full sized image

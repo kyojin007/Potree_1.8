@@ -74,7 +74,7 @@ export class Camera {
 
     pyramidgeometry.setFromPoints(pts);
 
-    // align the pyramid
+    // align the pyramid to the image: PlaneGeometry surrounds the origin on x & y axis
     pyramidgeometry.translate(-pixx / 2, -pixy / 2, 0);
     // add a user property
     pyramidgeometry.userData = { 'frustrum': true, 'imageNum': this.imageNum };
@@ -85,7 +85,7 @@ export class Camera {
     });
     const pyramid = new THREE.Mesh(pyramidgeometry, pyramidmaterial);
 
-    // create a object group https://threejs.org/docs/?q=object#api/en/objects/Group
+    // create an object group https://threejs.org/docs/?q=object#api/en/objects/Group
     const frustrum = new THREE.Group();
 
     // add the image and the pyramid to the group
@@ -112,35 +112,37 @@ export class Camera {
 
   /**
    *
-   * @param {*} imagedir
-   * @param {*} imagename
    * @param {*} camPix
    * @param {*} camFocal
    *
    * @returns {THREE.Object3D}
    */
   makeImagePlane(camPix, camFocal) {
-    // instantiate a loader
+    // instantiate a loader https://threejs.org/docs/?q=texture#api/en/loaders/TextureLoader
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
-    const imagetexture = loader.load(this.imagePath);
+    // NOTE: can add properties related to AJAX request here
+    const imageTexture = loader.load(this.imagePath);
 
     const pixx = camPix[0] / camFocal;
     const pixy = camPix[1] / camFocal;
 
-    const imageplane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
+    const imagePlane = new THREE.PlaneGeometry(pixx, pixy, 1, 1);
+    imagePlane.translate(0, 0, -1);
 
-    const imagematerial = new THREE.MeshBasicMaterial({ 'map': imagetexture, 'side': THREE.DoubleSide });
-    const image = new THREE.Mesh(imageplane, imagematerial);
+    const imageMaterial = new THREE.MeshBasicMaterial({ 'map': imageTexture, 'side': THREE.DoubleSide });
+    const image = new THREE.Mesh(imagePlane, imageMaterial);
 
-    const imagepyramid  = new THREE.Object3D();
+    const imageObj  = new THREE.Object3D();
 
-    imagepyramid.add(image);
+    imageObj.add(image);
 
+    /*
     imagepyramid.children[0].material.opacity = 1;
     imagepyramid.children[0].material.transparent  = true;
-
     return imagepyramid
+    */
+    return imageObj;
   }
 
   showCamera(viewer) {
