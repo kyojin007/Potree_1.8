@@ -290,6 +290,16 @@ $('#imageInfo button.btn-close').on('click', function (e) {
   $('.toggleAnnotations').removeClass('active');
 });
 
+$('.reply').on('click', function (e) {
+  e.preventDefault();
+
+  const html = `<li class="list-group-item">
+      <p><small>simon@datapoints.io <span class="date">Just now</span></small></p>
+      <p>My reply</p>
+    </li>`;
+  $(this).siblings('ul').append(html);
+});
+
 $('#navModeHeli').on('click', function (e) {
   scene.changeToHelicopterMode();
 });

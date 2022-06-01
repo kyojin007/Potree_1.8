@@ -247,36 +247,6 @@
 
                     <!--
                     <li class="nav-item dropdown keep-open">
-                        <a class="nav-link dropdown-toggle" href="#"
-                                role="button" data-bs-toggle="dropdown" >
-                            <i class="fa-solid fa-street-view fa-2x"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-right" >
-                            <li id="earthMode">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Earth Control
-                                </a>
-                            </li>
-                            <li id="orbitMode">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Orbit Mode
-                                </a>
-                            </li>
-                            <li id="flyMode">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Fly Mode
-                                </a>
-                            </li>
-                            <li id="helicopterMode">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa-solid fa-fw fa-helicopter"></i>Helicopter Mode
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    -->
-                    <!--
-                    <li class="nav-item dropdown keep-open">
                         <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-square fa-stack-2x buttonbg"></i>
@@ -354,17 +324,23 @@
 
             <div class="btn-group me-3" role="group" aria-label="Navigation Mode">
                 <input type="radio" class="btn-check" name="btnradio" id="navModeEarth" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="navModeEarth" title="Earth Navigation Mode"><i class="fa-solid fa-globe" data-fa-transform="down-6"></i></label>
+                <label class="btn btn-outline-primary" for="navModeEarth" title="Earth Navigation Mode">
+                    <i class="fa-solid fa-globe"></i>
+                </label>
 
                 <input type="radio" class="btn-check" name="btnradio" id="navModeOrbit" autocomplete="off">
-                <label class="btn btn-outline-primary" for="navModeOrbit" title="Orbit Navigation Mode"><i class="fa-solid fa-atom-simple" data-fa-transform="down-6"></i></label>
+                <label class="btn btn-outline-primary" for="navModeOrbit" title="Orbit Navigation Mode">
+                    <i class="fa-solid fa-atom-simple"></i>
+                </label>
 
                 <input type="radio" class="btn-check" name="btnradio" id="navModeFly" autocomplete="off">
-                <label class="btn btn-outline-primary" for="navModeFly" title="Fly Navigation Mode"><i class="fa-solid fa-kite" data-fa-transform="down-6"></i></label>
+                <label class="btn btn-outline-primary" for="navModeFly" title="Fly Navigation Mode">
+                    <i class="fa-solid fa-kite"></i>
+                </label>
 
                 <input type="radio" class="btn-check" name="btnradio" id="navModeHeli" autocomplete="off">
                 <label class="btn btn-outline-primary" for="navModeHeli" title="Helicopter Navigation Mode">
-                    <i class="fa-solid fa-helicopter" data-fa-transform="down-6"></i>
+                    <i class="fa-solid fa-helicopter"></i>
                 </label>
             </div>
 
@@ -376,6 +352,7 @@
         </div>
 
         <div id="attribution">
+            <span id="projectName">Steele Point, BVI</span> | <span id="projectDate">12th Oct 2017</span> |
             <a class="attr" href="https://datapoints.io">
                 <i class="fa fa-layer-group"></i>
                 &nbsp;&copy;Datapoints (2022)
@@ -394,7 +371,9 @@
                     <p><small>gary@datapoints.io <span class="date">Today</span></small></p>
                     <p>We should watch out for that</p>
                 </li>
-              </ul>
+            </ul>
+            <textarea rows="3" class="my-3"></textarea>
+            <button class="btn btn-primary my-3 reply">Reply</button>
         </div>
         <pre id="navigationMode"></pre>
     </div>
