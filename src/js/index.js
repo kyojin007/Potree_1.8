@@ -290,16 +290,16 @@ $('#imageInfo button.btn-close').on('click', function (e) {
   $('.toggleAnnotations').removeClass('active');
 });
 
-$('#helicopterMode').on('click', function (e) {
+$('#navModeHeli').on('click', function (e) {
   scene.changeToHelicopterMode();
 });
-$('#earthMode').on('click', function (e) {
+$('#navModeEarth').on('click', function (e) {
   scene.changeToEarthMode();
 });
-$('#orbitMode').on('click', function (e) {
+$('#navModeOrbit').on('click', function (e) {
   scene.changeToOrbitMode();
 });
-$('#flyMode').on('click', function (e) {
+$('#navModeFly').on('click', function (e) {
   scene.changeToFlyMode();
 });
 
@@ -314,7 +314,7 @@ document.addEventListener("navigationModeChanged", function(e) {
       $('#navigationMode').html('Orbit: viewpoint rotates around scene, right mouse to reposition point cloud');
       break;
     case 'fly':
-      $('#navigationMode').html('Fly first person: no altitude change');
+      $('#navigationMode').html('Fly: view from fixed position: no altitude change');
       break;
     case 'earth':
       $('#navigationMode').html('Earth: left mouse to position, right to rotate about clicked point within point cloud');
