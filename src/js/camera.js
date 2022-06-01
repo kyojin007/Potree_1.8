@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 export class Camera {
-  constructor(thumbPath, imagePath, roll, pitch, yaw, x, y, z) {
+  constructor(imageNum, thumbPath, imagePath, roll, pitch, yaw, x, y, z) {
+    this.imageNum = imageNum;
     this.thumbPath = thumbPath;
     this.imagePath = imagePath;
     this.roll = roll;
@@ -76,7 +77,7 @@ export class Camera {
     // align the pyramid
     pyramidgeometry.translate(-pixx / 2, -pixy / 2, 0);
     // add a user property
-    pyramidgeometry.userData = {'frustrum': true};
+    pyramidgeometry.userData = { 'frustrum': true, 'imageNum': this.imageNum };
 
     const pyramidmaterial = new THREE.MeshBasicMaterial({
       color: 0xf8f9fa,

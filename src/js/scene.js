@@ -127,10 +127,8 @@ export class Scene {
             // if it does, see if it's closer than the last distance
             if (intersects[i].distance < dist2obj) {
               dist2obj = intersects[i].distance;
-              if (this.INTERSECTED !== intersects[i].object) { // if it isnt the previous object
-                if (this.INTERSECTED) {
-                  this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex); //change the old one back
-                }
+              if (this.INTERSECTED !== intersects[i].object) { // if it isn't the previous object
+                this.clearIntersected();
 
                 this.INTERSECTED = intersects[i].object; //make this the new one
                 this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex(); // get its color
@@ -140,18 +138,22 @@ export class Scene {
           }
         }
       } else {
-        if (this.INTERSECTED) {
-          this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
-        }
-        this.INTERSECTED = null;
+        // if we previously had an highlighted camera, clear it's colour and forget it
+        this.clearIntersected();
       }
-      // renderer.render( scene, camera );
     } else {
-      if (this.INTERSECTED) {
-        this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
-      }
-      this.INTERSECTED = null;
+      this.clearIntersected();
     }
+  }
+
+  /**
+   *
+   */
+  clearIntersected() {
+    if (this.INTERSECTED) {
+      this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+    }
+    this.INTERSECTED = null;
   }
 
   /**

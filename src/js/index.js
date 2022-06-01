@@ -63,14 +63,15 @@ document.addEventListener('keydown', onDocumentKeyPress, false);
 // ADD PYRAMIDS TO SCENE
 for (let imagenum = 0; imagenum < camX.length; imagenum++) {
     const c = new Camera(
-        camdir + thumbs + '/' + camname[imagenum],
-        camdir + images + '/' + camname[imagenum],
-        camRoll[imagenum],
-        camPitch[imagenum],
-        camYaw[imagenum],
-        camX[imagenum],
-        camY[imagenum],
-        camZ[imagenum]
+      imagenum,
+      camdir + thumbs + '/' + camname[imagenum],
+      camdir + images + '/' + camname[imagenum],
+      camRoll[imagenum],
+      camPitch[imagenum],
+      camYaw[imagenum],
+      camX[imagenum],
+      camY[imagenum],
+      camZ[imagenum]
     );
 
     scene.addCamera(c);
@@ -141,12 +142,12 @@ function onDocumentMouseMove(event) {
  * @param {*} event
  */
 function onDocumentMouseClick(event) {
-  console.log(event, scene.mouse);
+  console.log(event, scene.mouse, scene.INTERSECTED);
   // doUse is enabled if we click on the CANVAS
   if (scene.mouse.doUse && event.button === 0) {
     if (scene.INTERSECTED !== null) {
-      flytoimagenum = scene.INTERSECTED.parent.myimagenum;
-      scene.flyToCam(flytoimagenum);
+      scene.flyToCam(scene.INTERSECTED.geometry.userData.imageNum);
+      // scene.flyToCam(flytoimagenum);
     }
   }
 }
@@ -158,6 +159,7 @@ function onDocumentMouseClick(event) {
  */
 function checkMovement(scene) {
   // console.log('checkMovement() %o', scene.cameraplaneview);
+
   // only check if imageplane is visible
   const cameraplaneview = scene.cameraplaneview;
   if (cameraplaneview) {
@@ -176,10 +178,12 @@ function checkMovement(scene) {
       }
       scene.cameraplaneview = false;
 
-      // fix issue where radius was crazy far away
+      // fix issue where radius was crazy far away -- still needed?
+      /*
       if (scene.viewer.scene.view.radius > 50) {
         scene.viewer.scene.view.radius = 50;
       }
+      */
     }
   }
 
