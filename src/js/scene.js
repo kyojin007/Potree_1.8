@@ -200,10 +200,6 @@ export class Scene {
         this.cameraplaneview = true;
         // this.camsvisible = true;
 
-        // add the selected image number to the button
-        // TODO: move outside the class
-        $('#btnimagenum').text(id.toString());
-
         // TODO: work out what this does
         if (this.lookAtPtNum !== null) {
             const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
@@ -276,6 +272,12 @@ export class Scene {
     this.imageplane.scale.z = this.SCALEIMG;
 
     this.imageplane.visible = true;
+
+    // trigger a custom event to say new image loaded
+    const detail = { 'view': false, 'count': id };
+    const event = new CustomEvent('imageViewChanged', { 'bubbles': true, 'detail': detail });
+    document.dispatchEvent(event);
+
   }
 
   /**
@@ -289,7 +291,7 @@ export class Scene {
     }
 
     const detail = { 'view': false, 'count': 0 };
-    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, 'detail': detail });
     document.dispatchEvent(event);
   }
 
@@ -306,7 +308,7 @@ export class Scene {
     this.filterImages(this.camPix, this.camFocal);
 
     const detail = { 'view': true, 'count': nimages };
-    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, 'detail': detail });
     document.dispatchEvent(event);
 }
 

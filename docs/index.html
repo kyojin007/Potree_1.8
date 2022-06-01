@@ -114,39 +114,6 @@
 
                 <!--Create class ml-auto for the navbar items you want on the right.-->
                 <ul class="navbar-nav ml-auto" >
-                    <!--Previous Image Arrow-->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="imgleft">
-                            <i class="fa-solid fa-arrow-left fa-3x"></i>
-                        </a>
-                    </li>
-
-                    <!--Toggle Image -->
-                    <li class="nav-item">
-                        <input type="checkbox" class="btn-check" id="toggleImages" autocomplete="off" checked>
-                        <label class="btn btn-outline-success" for="toggleImages">
-                            <span class="fa-layers fa-fw fa-2x">
-                                <i class="fa-solid fa-camera"></i>
-                                <span class="fa-layers-counter fa-layers-top-right cameraCount" id="btnImageCount" style="background-color: tomato;">0</span>
-                            </span>
-                        </label>
-                    </li>
-
-                    <!--Next Image Arrow -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="imgright">
-                            <i class="fa-solid fa-3x fa-arrow-right"></i>
-                        </a>
-                    </li>
-
-                    <!-- Toggle Map-->
-                    <li class="nav-item">
-                        <input type="checkbox" class="btn-check" id="toggleMap" autocomplete="off" checked>
-                        <label class="btn btn-outline-success" for="toggleMap">
-                            <i class="fa-solid fa-map fa-2x"></i>
-                        </label>
-                    </li>
-
                     <!-- Tools-->
                     <li class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#"
@@ -367,19 +334,48 @@
     </nav>
 
     <div id="mapcontainer" class="leaflet_map_container">
-        <div id="leafletmap"></div>
+        <div id="leafletMap"></div>
     </div>
 
     <div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;" >
         <div id="potree_render_area"></div>
 
+        <div id="controls" class="btn-toolbar" role="toolbar" aria-label="Point Cloud toolbar">
+            <div class="btn-group me-3" role="group" aria-label="Image Control">
+                <button type="button" class="btn btn-outline-primary prevImage"><i class="fa-solid fa-arrow-left"></i></button>
+                <button type="button" class="btn btn-outline-primary active camerasToggle" data-bs-toggle="button" autocomplete="off" aria-pressed="true"><i class="fa-solid fa-camera"></i></button>
+                <button type="button" class="btn btn-outline-primary nextImage"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div class="btn-group me-3" role="group" aria-label="Image Control">
+                <button type="button" class="btn btn-outline-primary active toggleMap" data-bs-toggle="button" autocomplete="off" aria-pressed="true"><i class="fa-solid fa-map"></i></button>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="Navigation Mode">
+                <input type="radio" class="btn-check" name="btnradio" id="navModeEarth" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="navModeEarth" title="Earth Navigation Mode"><i class="fa-solid fa-globe" data-fa-transform="down-6"></i></label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="navModeOrbit" autocomplete="off">
+                <label class="btn btn-outline-primary" for="navModeOrbit" title="Orbit Navigation Mode"><i class="fa-solid fa-atom-simple" data-fa-transform="down-6"></i></label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="navModeFly" autocomplete="off">
+                <label class="btn btn-outline-primary" for="navModeFly" title="Fly Navigation Mode"><i class="fa-solid fa-kite" data-fa-transform="down-6"></i></label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="navModeHeli" autocomplete="off">
+                <label class="btn btn-outline-primary" for="navModeHeli" title="Helicopter Navigation Mode">
+                    <i class="fa-solid fa-helicopter" data-fa-transform="down-6"></i>
+                </label>
+            </div>
+        </div>
+
         <div id="attribution">
             <a class="attr" href="https://datapoints.io">
                 <i class="fa fa-layer-group"></i>
-                &nbsp;Datapoints (2022)&nbsp
+                &nbsp;&copy;Datapoints (2022)
             </a>
         </div>
 
+        <pre id="imageInfo"></pre>
         <pre id="navigationMode"></pre>
     </div>
 

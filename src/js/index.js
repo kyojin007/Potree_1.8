@@ -88,10 +88,10 @@ for (let imagenum = 0; imagenum < camX.length; imagenum++) {
 $('#btnImageCount').html(camX.length);
 scene.currentid = 0;
 
-// ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
+// ADD IMAGE PLANE TO SCENE AS INVISIBLE - stores the larger image for display when we click
 scene.addImagePlane(camPix, camFocal);
 
-//checks if user moved the screen, and therefore imageplane should be turned off
+// checks if user moved the screen, and therefore imageplane should be turned off
 setInterval(checkMovement, 100, scene);
 // plot the camera view onto Leaflet mini map
 // setInterval(cameraOnMap, 10000);
@@ -120,25 +120,26 @@ function onDocumentMouseMove(event) {
   // (such as the mouse's TrackballControls)
   // event.preventDefault();
 
-  // TODO: do we really need this for every mouse move! should just be required on click?
-  // update the mouse variable
+  // TODO: do we really need this for every mouse move!
+  // store the mouse position
   scene.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   scene.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  // was the mouse over the CANVAS element?
   let elementType = '';
-  // did the click happen over the CANVAS element?
   try {
     elementType = document.elementFromPoint(event.clientX, event.clientY).tagName;
   } catch(err) {
     elementType = 'ERROR';
   }
-
   scene.mouse.doUse = elementType === 'CANVAS';
+
   // did we move over an image?
   scene.checkIntersections();
 }
 
 /**
- *
+ * if we click on a camera jump to that position and show a larger version of the image
  * @param {*} event
  */
 function onDocumentMouseClick(event) {
@@ -147,7 +148,6 @@ function onDocumentMouseClick(event) {
   if (scene.mouse.doUse && event.button === 0) {
     if (scene.INTERSECTED !== null) {
       scene.flyToCam(scene.INTERSECTED.geometry.userData.imageNum);
-      // scene.flyToCam(flytoimagenum);
     }
   }
 }
@@ -203,10 +203,9 @@ function checkMovement(scene) {
 }
 
 // UI Event Handlers
-$('#toggleImages').on('change', function (e) {
+$('.camerasToggle').on('click', function (e) {
   e.preventDefault();
   console.log('toggle images %o %o', scene.camsvisible, scene.cameraplaneview);
-  console.log(this.checked);
   if (scene.camsvisible) {
     if (scene.cameraplaneview) {
       scene.imageplane.visible = false;
@@ -225,7 +224,7 @@ $('#toggleImages').on('change', function (e) {
 });
 
 // jump to Previous image
-$('#imgleft').on('click', function (e) {
+$('.prevImage').on('click', function (e) {
   scene.currentid--;
   console.log('previous image: %i', scene.currentid);
 
@@ -252,7 +251,7 @@ $('#imgleft').on('click', function (e) {
 });
 
 // select Next image
-$('#imgright').on('click', function (e) {
+$('.nextImage').on('click', function (e) {
   scene.currentid++;
   console.log('next image: %i', scene.currentid);
 
@@ -274,6 +273,14 @@ $('#imgright').on('click', function (e) {
     scene.flyToCam(scene.currentid);
   }
 });
+
+// UI Event Handlers
+$('.toggleMap').on('click', function (e) {
+  e.preventDefault();
+  console.log('toggle map');
+  $('#mapcontainer').toggle();
+});
+
 
 $('#helicopterMode').on('click', function (e) {
   scene.changeToHelicopterMode();
@@ -305,12 +312,17 @@ document.addEventListener("navigationModeChanged", function(e) {
       $('#navigationMode').html('Earth: left mouse to position, right to rotate about clicked point within point cloud');
       break;
     default:
-      $('#navigation').empty();
+      $('#navigationMode').empty();
   }
 });
 
-document.addEventListener("imagesViewChanged", function(e) {
-  console.log("image view changed to %o", e.detail.view);
+document.addEventListener("imageViewChanged", function(e) {
+  console.log("image view changed %o", e.detail);
+  $('#imageInfo').html('Image number: ' + e.detail.count);
+});
+
+document.addEventListener("camerasViewChanged", function(e) {
+  console.log("cameras changed %o", e.detail);
   $('#btnImageCount').html(e.detail.count);
 });
 
