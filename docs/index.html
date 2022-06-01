@@ -351,7 +351,7 @@
                 <button type="button" class="btn btn-outline-primary active toggleMap" data-bs-toggle="button" autocomplete="off" aria-pressed="true"><i class="fa-solid fa-map"></i></button>
             </div>
 
-            <div class="btn-group" role="group" aria-label="Navigation Mode">
+            <div class="btn-group me-3" role="group" aria-label="Navigation Mode">
                 <input type="radio" class="btn-check" name="btnradio" id="navModeEarth" autocomplete="off" checked>
                 <label class="btn btn-outline-primary" for="navModeEarth" title="Earth Navigation Mode"><i class="fa-solid fa-globe" data-fa-transform="down-6"></i></label>
 
@@ -366,6 +366,12 @@
                     <i class="fa-solid fa-helicopter" data-fa-transform="down-6"></i>
                 </label>
             </div>
+
+            <div class="btn-group" role="group" aria-label="Annotations">
+                <button type="button" class="btn btn-outline-primary toggleAnnotations" data-bs-toggle="button" autocomplete="off" aria-pressed="false">
+                    <i class="fa-solid fa-comments"></i>
+                </button>
+            </div>
         </div>
 
         <div id="attribution">
@@ -375,7 +381,20 @@
             </a>
         </div>
 
-        <pre id="imageInfo"></pre>
+        <div id="imageInfo" class="invisible">
+            <button type="button" class="btn-close btn-close-white float-end" aria-label="Close"></button>
+            <h5>Image Number <span id="imageNum">1</span> of 108</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <p><small>adam@datapoints.io <span class="date">22nd May 2022</span></small></p>
+                    <p>This is interesting</p>
+                </li>
+                <li class="list-group-item">
+                    <p><small>gary@datapoints.io <span class="date">Today</span></small></p>
+                    <p>We should watch out for that</p>
+                </li>
+              </ul>
+        </div>
         <pre id="navigationMode"></pre>
     </div>
 

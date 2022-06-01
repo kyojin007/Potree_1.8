@@ -274,13 +274,21 @@ $('.nextImage').on('click', function (e) {
   }
 });
 
-// UI Event Handlers
 $('.toggleMap').on('click', function (e) {
   e.preventDefault();
   console.log('toggle map');
   $('#mapcontainer').toggle();
 });
 
+$('.toggleAnnotations').on('click', function (e) {
+  e.preventDefault();
+  console.log('toggle annotations');
+  $('#imageInfo').toggleClass('invisible');
+});
+$('#imageInfo button.btn-close').on('click', function (e) {
+  $('#imageInfo').addClass('invisible');
+  $('.toggleAnnotations').removeClass('active');
+});
 
 $('#helicopterMode').on('click', function (e) {
   scene.changeToHelicopterMode();
@@ -318,7 +326,10 @@ document.addEventListener("navigationModeChanged", function(e) {
 
 document.addEventListener("imageViewChanged", function(e) {
   console.log("image view changed %o", e.detail);
-  $('#imageInfo').html('Image number: ' + e.detail.count);
+  $('#imageNum').html(e.detail.count);
+
+  $('#imageInfo').removeClass('invisible');
+  $('.toggleAnnotations').addClass('active');
 });
 
 document.addEventListener("camerasViewChanged", function(e) {
