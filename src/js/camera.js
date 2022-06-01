@@ -75,6 +75,8 @@ export class Camera {
 
     // align the pyramid
     pyramidgeometry.translate(-pixx / 2, -pixy / 2, 0);
+    // add a user property
+    pyramidgeometry.userData = {'frustrum': true};
 
     const pyramidmaterial = new THREE.MeshBasicMaterial({
       color: 0xf8f9fa,

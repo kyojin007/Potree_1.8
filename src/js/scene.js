@@ -104,9 +104,10 @@ export class Scene {
   }
 
   /**
-   *
+   * https://threejs.org/docs/?q=raycas#api/en/core/Raycaster
    */
   checkIntersections() {
+    // console.log('checkIntersections()', this.mouse);
     const raycaster = this.raycaster;
     const viewer = this.viewer;
 
@@ -120,9 +121,9 @@ export class Scene {
         // loop thru intersected objects
         for (let i = 0; i < intersects.length; i++) {
           // console.log(intersects[i]);
-          // see if it has 5 vertices (pyramid)
-          // if (intersects[i].object.geometry.vertices.length === 5) {
-          if (intersects[i].object.children.length > 0) {
+          // see if it is a pyramid using the userData property that we set when creating them
+          if (intersects[i].object.geometry.userData.frustrum) {
+            console.log('found frustrum');
             // if it does, see if it's closer than the last distance
             if (intersects[i].distance < dist2obj) {
               dist2obj = intersects[i].distance;
