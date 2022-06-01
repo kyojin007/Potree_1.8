@@ -20,14 +20,17 @@ function changeCameraOrientation(pitch,yaw){
 
 //MEASUREMENT FUNCTIONS
 function measPoint(){
-    let measurement = measuringTool.startInsertion({
-        showDistances: false,
-        showAngles: false,
-        showCoordinates: true,
-        showArea: false,
-        closed: true,
-        maxMarkers: 1,
-        name: 'Point'});
+    let measurement = measuringTool.startInsertion(
+        {
+            showDistances: false,
+            showAngles: false,
+            showCoordinates: true,
+            showArea: false,
+            closed: true,
+            maxMarkers: 1,
+            name: 'Point'
+        }
+    );
 }
 
 function measDistance(){

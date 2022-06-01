@@ -1,11 +1,22 @@
-#attribution{
+#attribution {
+    background-color:rgba(255,255,255,0.5);
     position:absolute;
     bottom:0px;
     right:0px;
     height: 27px;
     z-index:10000;
-    background-color:rgba(255,255,255,0.5);
 }
+#navigationMode {
+    background-color: black;
+    color: lightgray;
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    opacity: 0.85;
+    padding: 5px;
+    z-index: 10000;
+}
+
 .attr{
      color: black !important;
  }
@@ -24,12 +35,6 @@
 }
 .buttonfgclicked{
     color: #83f99f
-}
-
-.cameranumber{
-    margin-top: 1.52em;
-    font-size: 10px;
-    color: #f8f9fa;
 }
 
 .downchevron{
@@ -67,7 +72,7 @@
 
 }
 
-.btn{
+.btn {
     height: 50px;
     border-width: 2px;
     background-repeat: repeat-x;
@@ -89,25 +94,25 @@
 }
 
 #btnColormap1 {
-    background: url('../assets/cmapimages/Colormap_01.png');
+    background: url('../cmapimages/Colormap_01.png');
 }
 #btnColormap2 {
-    background: url('../assets/cmapimages/Colormap_02.png');
+    background: url('../cmapimages/Colormap_02.png');
 }
 #btnColormap3 {
-    background: url('../assets/cmapimages/Colormap_03.png');
+    background: url('../cmapimages/Colormap_03.png');
 }
 #btnColormap4 {
-    background: url('../assets/cmapimages/Colormap_04.png');
+    background: url('../cmapimages/Colormap_04.png');
 }
 #btnColormap5 {
-    background: url('../assets/cmapimages/Colormap_05.png');
+    background: url('../cmapimages/Colormap_05.png');
 }
 #btnColormap6 {
-    background: url('../assets/cmapimages/Colormap_06.png');
+    background: url('../cmapimages/Colormap_06.png');
 }
 #btnColormap7 {
-    background: url('../assets/cmapimages/Colormap_07.png');
+    background: url('../cmapimages/Colormap_07.png');
 
 }
 

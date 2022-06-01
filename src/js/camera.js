@@ -35,49 +35,76 @@ export class Camera {
     const imagematerial = new THREE.MeshBasicMaterial({ 'map': imagetexture, 'side': THREE.DoubleSide });
     const image = new THREE.Mesh(imageplane, imagematerial);
 
+    console.log(imageplane.attributes);
+
     // create a pyramid shape to indicate the direction
     const pyramidgeometry = new THREE.BufferGeometry();
-    const pyramid_pts = [
-      new THREE.Vector3(0.5, 0.5, 0.5),
+
+    // each Vector3 represents a point in space
+    const height = 0.6;
+    const pts = [
+      // base, formed of two triangles
+      /*
       new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, 0, 1),
-      new THREE.Vector3(1, 0, 1),
-      new THREE.Vector3(1, 0, 0)
+      new THREE.Vector3(pixx, 0, 0),
+      new THREE.Vector3(pixx, pixy, 0),
+
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(pixx, pixy, 0),
+      new THREE.Vector3(0, pixy, 0),
+      */
+      // front-right
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(pixx, 0, 0),
+      new THREE.Vector3(pixx / 2, pixy / 2, height),
+      // front-right
+      new THREE.Vector3(pixx, 0, 0),
+      new THREE.Vector3(pixx, pixy, 0),
+      new THREE.Vector3(pixx / 2, pixy / 2, height),
+      // front-right
+      new THREE.Vector3(0, pixy, 0),
+      new THREE.Vector3(pixx, pixy, 0),
+      new THREE.Vector3(pixx / 2, pixy / 2, height),
+      // front-right
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, pixy, 0),
+      new THREE.Vector3(pixx / 2, pixy / 2, height),
     ];
-    pyramidgeometry.setFromPoints(pyramid_pts);
 
-    const pyramidmaterial = new THREE.MeshBasicMaterial(
-        {
-            color: 0xf8f9fa,
-            wireframe: true
-        }
-    );
+    pyramidgeometry.setFromPoints(pts);
 
+    // align the pyramid
+    pyramidgeometry.translate(-pixx / 2, -pixy / 2, 0);
+
+    const pyramidmaterial = new THREE.MeshBasicMaterial({
+      color: 0xf8f9fa,
+      wireframe: true
+    });
     const pyramid = new THREE.Mesh(pyramidgeometry, pyramidmaterial);
 
-    // create a object group
-    const imagepyramid  = new THREE.Object3D();
+    // create a object group https://threejs.org/docs/?q=object#api/en/objects/Group
+    const frustrum = new THREE.Group();
 
     // add the image and the pyramid to the group
-    imagepyramid.add(image);
-    imagepyramid.add(pyramid);
+    frustrum.add(image);
+    frustrum.add(pyramid);
 
     // position the group
-    imagepyramid.position.x = this.x;
-    imagepyramid.position.y = this.y;
-    imagepyramid.position.z = this.z;
+    frustrum.position.x = this.x;
+    frustrum.position.y = this.y;
+    frustrum.position.z = this.z;
 
     // rotate to the correct orientation
-    imagepyramid.rotation.x = this.roll * Math.PI / 180;
-    imagepyramid.rotation.y = this.pitch * Math.PI / 180;
-    imagepyramid.rotation.z = this.yaw * Math.PI / 180;
+    frustrum.rotation.x = this.roll * Math.PI / 180;
+    frustrum.rotation.y = this.pitch * Math.PI / 180;
+    frustrum.rotation.z = this.yaw * Math.PI / 180;
 
     // and scale
-    imagepyramid.scale.x = scale;
-    imagepyramid.scale.y = scale;
-    imagepyramid.scale.z = scale;
+    frustrum.scale.x = scale;
+    frustrum.scale.y = scale;
+    frustrum.scale.z = scale;
 
-    return imagepyramid
+    return frustrum;
   }
 
   /**

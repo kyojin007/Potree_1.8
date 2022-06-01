@@ -19,7 +19,7 @@ export class Scene {
   camdir = '';
   imageplane = null;
 
-  constructor(target, camdir) {
+  constructor(target, camdir, camPix, camFocal) {
     this.viewer = new Potree.Viewer(document.getElementById(target));
     this.viewer.setEDLEnabled(true);
     this.viewer.setFOV(60);
@@ -29,6 +29,8 @@ export class Scene {
     this.viewer.loadSettingsFromURL();
 
     this.camdir = camdir;
+    this.camPix = camPix;
+    this.camFocal = camFocal;
   }
 
   addCamera(camera) {
@@ -36,18 +38,27 @@ export class Scene {
   }
 
   addFrustrum(obj, i) {
+    obj.isFiltered = false;
+    obj.myImageNum = i;
+
     this.frustrum[i] = obj;
     this.viewer.scene.scene.add(obj);
   }
 
-  addImagePlane(camPix, camFocal) {
+  /**
+   * create a plane to hold the full sized images
+   */
+  addImagePlane() {
     if (this.cameras.length > 0) {
       this.imageplane = this.cameras[0].makeImagePlane(
-        camPix,
-        camFocal
+        this.camPix,
+        this.camFocal
       );
+
       this.viewer.scene.scene.add(this.imageplane);
       this.imageplane.visible = false;
+    } else {
+      console.error('No cameras defined');
     }
   }
 
@@ -148,31 +159,44 @@ export class Scene {
    * @param {*} id
    */
   flyToCam(id) {
-    console.log('flyToCam(%i)', id);
+    console.log('flyToCam(%i)', id, this.camsvisible);
 
     const cam = this.cameras[id];
 
     if (id < this.ncams) {
         this.imageplane.visible = false;
         this.viewer.fpControls.stop();
-        this.changeToOrbitMode();
+
+        // this.changeToOrbitMode();
+        this.changeToFlyMode();
+
+        // move the global view to the position of image[id]
         this.moveCamera(id);
+
+        // alter the plane to match this camera
         this.changeImagePlane(id);
 
-        this.lastXYZ= [
+        // store position so we can test for movement
+        this.lastXYZ = [
           Math.round(cam.x * 100) / 100,
           Math.round(cam.y * 100) / 100,
           Math.round(cam.z * 100) / 100
         ];
 
+        // these don't seem to be in use
         $('#toggleimageplane').removeClass('disabled');
         $('#togglecam').addClass('disabled');
+
+        // turn off the camera position thumbnails
         this.turnImagesOff();
         this.currentid = id;
         this.cameraplaneview = true;
         this.camsvisible = true;
 
+        // add the selected image number to the button
         $('#btnimagenum').text(id.toString());
+
+        // TODO: work out what this does
         $('#cameraicon').addClass('buttonfgclicked');
         if (this.lookAtPtNum !== null) {
             const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
@@ -216,45 +240,13 @@ export class Scene {
   }
 
   /**
-   * CHECK TO SEE IF CAMERA HAS MOVED. IF YES, GET OUT OF FIRST PERSON VIEW AND REMOVE CAMERA PLANE
-   */
-  checkMovement() {
-    // only check if imageplane is visible
-    const cameraplaneview = this.cameraplaneview;
-    if (cameraplaneview) {
-      const currentXYZ = getCurrentPos();
-      if (currentXYZ[0] != this.lastXYZ[0] || currentXYZ[1] != this.lastXYZ[1] || currentXYZ[2] != this.lastXYZ[2]) {
-        this.imageplane.visible=false;
-        this.changeToFlyMode();
-        if (camsvisible | cameraplaneview) {
-          this.turnImagesOn();
-        }
-        this.cameraplaneview = false;
-        // fix issue where radius was crazy far away
-        if (this.viewer.scene.view.radius > 50) {
-          this.viewer.scene.view.radius = 50;
-        }
-      }
-    }
-
-    if (this.lookAtPtNum != null && dofilterimages && !cameraplaneview) {
-      const currentlookatpt = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
-
-      if (currentlookatpt.x != lastLookAtPt.x || currentlookatpt.y != lastLookAtPt.y || currentlookatpt.z != lastLookAtPt.z) {
-        filterImages(camPix, camFocal);
-        console.log("filtering images");
-        lastLookAtPt = currentlookatpt;
-      }
-    }
-  }
-
-  /**
    * place the full sized images into the imageplane and orientate
    *
    * @param {*} id
    */
   changeImagePlane(id) {
     const camera = this.cameras[id];
+    console.log('changeImagePlane(%i) %o', id, camera)
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
@@ -282,31 +274,32 @@ export class Scene {
    * hide the thumbnails
    */
   turnImagesOff() {
-    if (this.camsvisible) {
-      const nimages = this.cameras.length;
-      this.camsvisible = false;
-      for (let j = 0; j < nimages; j++) {
-        this.frustrum[j].visible = false;
-      }
+    const nimages = this.cameras.length;
+    this.camsvisible = false;
+    for (let j = 0; j < nimages; j++) {
+      this.frustrum[j].visible = false;
     }
-    // TODO: should find another place for this, perhaps fire event?
-    $('#cameraicon').removeClass('buttonfgclicked');
+
+    const detail = { 'view': false, 'count': 0 };
+    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    document.dispatchEvent(event);
   }
 
   /**
    * show the thumbnails
    */
-  turnImagesOn(camPix, camFocal) {
-    if (!this.camsvisible) {
-        const nimages = this.cameras.length;
-        this.camsvisible = true;
-        for (let j = 0; j < nimages; j++) {
-          this.frustrum[j].visible = true;
-        }
-        this.filterImages(camPix, camFocal);
+  turnImagesOn() {
+    console.log('turnImagesOn()', this.camsvisible);
+    const nimages = this.cameras.length;
+    this.camsvisible = true;
+    for (let j = 0; j < nimages; j++) {
+      this.frustrum[j].visible = true;
     }
-    // TODO: should find another place for this, perhaps fire event?
-    $('#cameraicon').addClass('buttonfgclicked');
+    this.filterImages(this.camPix, this.camFocal);
+
+    const detail = { 'view': true, 'count': nimages };
+    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    document.dispatchEvent(event);
 }
 
   /**
@@ -316,9 +309,14 @@ export class Scene {
     let nimages = this.cameras.length;
     this.camsvisible = !this.camsvisible;
     for (let j = 0; j < nimages; j++) {
-        this.frustrum[j].visible = camsvisible;
+        this.frustrum[j].visible = this.camsvisible;
     }
-    wantcamsvisible = camsvisible; // ??
+
+    const detail = { 'view': false, 'count': nimages };
+    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    document.dispatchEvent(event);
+
+    // wantcamsvisible = camsvisible; // ??
   }
 
   /**
@@ -366,10 +364,14 @@ export class Scene {
    */
   moveCamera(id) {
     const cam = this.cameras[id];
+    console.log('moveCamera(%o)', cam);
+
+    // move the global view to the position of the image camera
     this.viewer.scene.view.position.x = cam.x;
     this.viewer.scene.view.position.y = cam.y;
     this.viewer.scene.view.position.z = cam.z;
 
+    // https://threejs.org/docs/index.html?q=euler#api/en/math/Euler
     let a = new THREE.Euler(
       cam.roll * Math.PI / 180,
       cam.pitch * Math.PI / 180,
@@ -377,7 +379,12 @@ export class Scene {
       'XYZ'
     );
 
+    // https://threejs.org/docs/index.html?q=vector#api/en/math/Vector3
+    // this appears to be one unit less in the Z axis
     let b = new THREE.Vector3(0, 0, -1);
+
+    // apply the Euler rotational transform to orientate the global view
+    // https://threejs.org/docs/index.html?q=vector#api/en/math/Vector3.applyEuler
     b.applyEuler(a);
     b.x = b.x + cam.x;
     b.y = b.y + cam.y;
@@ -395,14 +402,36 @@ export class Scene {
    * CHANGE CAMERA MODE
    */
   changeToFlyMode() {
-    // this.viewer.setNavigationMode(Potree.OrbitControls);
-    this.viewer.changeToOrbitMode;
+    //this.viewer.setNavigationMode(Potree.FirstPersonControls);
+    this.viewer.setControls(this.viewer.fpControls);
+    this.viewer.fpControls.lockElevation = false;
+
+    const event = new CustomEvent('navigationModeChanged', { 'bubbles': true, 'detail': { 'navmode': 'fly' } });
+    document.dispatchEvent(event);
   }
 
   changeToOrbitMode() {
-    //this.viewer.setNavigationMode(Potree.FirstPersonControls);
-    this.viewer.changeToFlyMode;
-    this.viewer.fpControls.lockElevation = true;
+    // this.viewer.setNavigationMode(Potree.OrbitControls);
+    this.viewer.setControls(this.viewer.orbitControls);
+    this.viewer.fpControls.lockElevation = false;
+
+    const event = new CustomEvent('navigationModeChanged', { 'bubbles': true, 'detail': { 'navmode': 'orbit' } });
+    document.dispatchEvent(event);
   }
 
+  changeToHelicopterMode() {
+    this.viewer.setControls(this.viewer.fpControls);
+    this.viewer.fpControls.lockElevation = true;
+
+    const event = new CustomEvent('navigationModeChanged', { 'bubbles': true, 'detail': { 'navmode': 'helicopter' } });
+    document.dispatchEvent(event);
+  }
+
+  changeToEarthMode() {
+    this.viewer.setControls(this.viewer.earthControls);
+    this.viewer.fpControls.lockElevation = false;
+
+    const event = new CustomEvent('navigationModeChanged', { 'bubbles': true, 'detail': { 'navmode': 'earth' } });
+    document.dispatchEvent(event);
+  }
 }

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { Camera } from './camera';
 import { Scene } from './scene';
 
@@ -22,7 +23,7 @@ const ptcloud = urlParams.get('ptcloud');
 
 console.log(ptcloud);
 
-const scene = new Scene('potree_render_area');
+const scene = new Scene('potree_render_area', camdir, camPix, camFocal);
 
 const viewer = scene.viewer;
 
@@ -81,22 +82,16 @@ for (let imagenum = 0; imagenum < camX.length; imagenum++) {
         scene.SCALEIMG
       ), imagenum
     );
-
-    /*
-    imageobj[imagenum].myimagenum = imagenum;
-    imageobj[imagenum].isFiltered = false;
-    viewer.scene.scene.add(imageobj[imagenum]);
-    */
 }
 
-$('#btnimagenum').html(camX.length);
+$('#btnImageCount').html(camX.length);
 scene.currentid = 0;
 
 // ADD IMAGE PLANE TO SCENE AS INVISIBLE - I think this stores the larger image for display when we click
 scene.addImagePlane(camPix, camFocal);
 
 //checks if user moved the screen, and therefore imageplane should be turned off
-setInterval(scene.checkMovement, 10000);
+setInterval(checkMovement, 100, scene);
 // plot the camera view onto Leaflet mini map
 // setInterval(cameraOnMap, 10000);
 
@@ -137,7 +132,7 @@ function onDocumentMouseMove(event) {
   }
 
   scene.mouse.doUse = elementType === 'CANVAS';
-  // did we click over an image?
+  // did we move over an image?
   scene.checkIntersections();
 }
 
@@ -156,10 +151,58 @@ function onDocumentMouseClick(event) {
   }
 }
 
+/**
+ * CHECK TO SEE IF CAMERA HAS MOVED. IF YES, GET OUT OF FIRST PERSON VIEW AND REMOVE CAMERA PLANE
+ * defined here because it runs under setInterval
+ * @param {Scene} scene
+ */
+function checkMovement(scene) {
+  // console.log('checkMovement() %o', scene.cameraplaneview);
+  // only check if imageplane is visible
+  const cameraplaneview = scene.cameraplaneview;
+  if (cameraplaneview) {
+    const currentXYZ = scene.currentPos;
+    if (
+      currentXYZ[0] !== scene.lastXYZ[0] ||
+      currentXYZ[1] !== scene.lastXYZ[1] ||
+      currentXYZ[2] !== scene.lastXYZ[2]
+    ) {
+      console.log('movement! revert to thumbnails view', scene.camsvisible, scene.cameraplaneview);
+      scene.imageplane.visible = false;
+      scene.changeToOrbitMode();
+
+      if (scene.camsvisible | cameraplaneview) {
+        scene.turnImagesOn();
+      }
+      scene.cameraplaneview = false;
+
+      // fix issue where radius was crazy far away
+      if (scene.viewer.scene.view.radius > 50) {
+        scene.viewer.scene.view.radius = 50;
+      }
+    }
+  }
+
+  if (scene.lookAtPtNum !== null && scene.dofilterimages && !scene.cameraplaneview) {
+    const currentlookatpt = scene.viewer.scene.measurements[scene.lookAtPtNum].children[3].getWorldPosition();
+
+    if (
+      currentlookatpt.x !== scene.lastLookAtPt.x ||
+      currentlookatpt.y !== scene.lastLookAtPt.y ||
+      currentlookatpt.z !== scene.lastLookAtPt.z
+    ) {
+      filterImages(scene.camPix, scene.camFocal);
+      console.log("filtering images");
+      scene.lastLookAtPt = currentlookatpt;
+    }
+  }
+}
+
 // UI Event Handlers
-$('#toggleimage').on('click', function (e) {
+$('#toggleImages').on('change', function (e) {
   e.preventDefault();
   console.log('toggle images %o %o', scene.camsvisible, scene.cameraplaneview);
+  console.log(this.checked);
   if (scene.camsvisible) {
     if (scene.cameraplaneview) {
       scene.imageplane.visible = false;
@@ -167,7 +210,6 @@ $('#toggleimage').on('click', function (e) {
       scene.turnImagesOff();
     }
     this.camsvisible = false;
-    $('#cameraicon').removeClass('buttonfgclicked');
   } else {
     if (scene.cameraplaneview) {
       scene.imageplane.visible = true;
@@ -175,10 +217,10 @@ $('#toggleimage').on('click', function (e) {
       scene.turnImagesOn();
     }
     this.camsvisible = true;
-    $('#cameraicon').addClass('buttonfgclicked');
   }
 });
 
+// jump to Previous image
 $('#imgleft').on('click', function (e) {
   scene.currentid--;
   console.log('previous image: %i', scene.currentid);
@@ -205,9 +247,10 @@ $('#imgleft').on('click', function (e) {
   }
 });
 
+// select Next image
 $('#imgright').on('click', function (e) {
   scene.currentid++;
-  console.log('previous image: %i', scene.currentid);
+  console.log('next image: %i', scene.currentid);
 
   let count = 0;
   let flag = true;
@@ -228,5 +271,43 @@ $('#imgright').on('click', function (e) {
   }
 });
 
+$('#helicopterMode').on('click', function (e) {
+  scene.changeToHelicopterMode();
+});
+$('#earthMode').on('click', function (e) {
+  scene.changeToEarthMode();
+});
+$('#orbitMode').on('click', function (e) {
+  scene.changeToOrbitMode();
+});
+$('#flyMode').on('click', function (e) {
+  scene.changeToFlyMode();
+});
+
+// update the UI in response to a change of navigation mode
+document.addEventListener("navigationModeChanged", function(e) {
+  console.log(e.detail);
+  switch (e.detail.navmode) {
+    case 'helicopter':
+      $('#navigationMode').html('Helicopter: fixed point of reference, no altitude change');
+      break;
+    case 'orbit':
+      $('#navigationMode').html('Orbit: viewpoint rotates around scene, right mouse to reposition point cloud');
+      break;
+    case 'fly':
+      $('#navigationMode').html('Fly first person: no altitude change');
+      break;
+    case 'earth':
+      $('#navigationMode').html('Earth: left mouse to position, right to rotate about clicked point within point cloud');
+      break;
+    default:
+      $('#navigation').empty();
+  }
+});
+
+document.addEventListener("imagesViewChanged", function(e) {
+  console.log("image view changed to %o", e.detail.view);
+  $('#btnImageCount').html(e.detail.count);
+});
 
 export { scene };

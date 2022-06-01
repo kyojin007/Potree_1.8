@@ -7,17 +7,25 @@
 
     <title>DataPoints Demo</title>
     <link rel="icon" href="assets/images/logoOSU2.png">
-    <!-- <link rel="stylesheet" type="text/css" href="libs/jstree/themes/mixed/style.css"> -->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/83a64df0e9.js" crossorigin="anonymous"></script>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous">
+    </script>
 
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+    </script>
 
     <!-- http://bgrins.github.io/spectrum/ colour picker -->
     <script src="libs/spectrum-1.8.1/spectrum.js"></script>
@@ -33,7 +41,7 @@
     <!-- https://github.com/sole/tween.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
 
-    <!-- https://threejs.org/
+    <!-- https://threejs.org/ -- installed via NPM
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
         integrity="sha512-334uBDwY0iZ2TklV1OtDtBW9vp7jjP7SWRzT7Ehu1fdtPIjTpCwTSFb8HI/YBau9L1/kRBEOALrS229Kry4yFQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -54,8 +62,9 @@
         referrerpolicy="no-referrer">
     </script>
 
-    <!-- Open Layers -->
+    <!-- Open Layers
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    -->
     <!-- <link rel="stylesheet" type="text/css" href="libs/openlayers3/ol.css">
     <script src="libs/openlayers3/ol.js"></script> -->
 
@@ -72,443 +81,458 @@
     <!-- https://github.com/verma/plasio / https://plas.io - point cloud rendering
     <script src="libs/plasio-master/js/laslaz.js"></script> -->
 
+    <!-- ?? -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.1.2/math.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
 
-    <!-- configuration -->
-    <!-- <script src="assets/js/03_POSES/cameras.js"></script> -->
+    <!-- our JS -->
     <script type="module" src="main.js"></script>
 </head>
 
 <body>
+    <!-- Bootstrap 5 Layout -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index:1000;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="assets/images/logoOSU2.png" height="50px" class="d-inline-block align-top">
+            </a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbarContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<!-- Bootstrap Layout -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light py-0" style="z-index:100;">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="assets/images/logoOSU2.png" height="50px" class="d-inline-block align-top">
-        </a>
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainNavbarContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="mainNavbarContent">
+                <div class="d-flex justify-content-left nav-item">
+                    <span class="navbar-text"><h2>Steel Point, BVI</h2></span>
+                </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="mainNavbarContent">
-            <div class="d-flex justify-content-left nav-item">
-                <span class="navbar-text"><h2>Steel Point, BVI</h2></span>
-            </div>
+                <!--Create class ml-auto for the navbar items you want on the right.-->
+                <ul class="navbar-nav ml-auto" >
+                    <!--Previous Image Arrow-->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="imgleft">
+                            <i class="fa-solid fa-arrow-left fa-3x"></i>
+                        </a>
+                    </li>
 
-            <!--Create class ml-auto for the navbar items you want on the right.-->
-            <ul class="navbar-nav ml-auto" >
-                <!--Previous Image Arrow-->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="imgleft">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-arrow-left fa-stack-1x buttonfg"></i>
-                        </span>
-                    </a>
-                </li>
-
-                <!--Toggle Image -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="toggleimage">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i id="cameraicon" class="fa fa-camera fa-stack-1x buttonfg buttonfgclicked"></i>
-                            <strong class="fa-stack-1x cameranumber" id="btnimagenum">0</strong>
-                        </span>
-                    </a>
-                </li>
-
-                <!--Next Image Arrow -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="imgright">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-arrow-right fa-stack-1x buttonfg"></i>
-                        </span>
-                    </a>
-                </li>
-
-                <!-- Toggle Map-->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="togglemap">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i id="mapbutton" class="fa fa-map fa-stack-1x buttonfg buttonfgclicked"></i>
-                        </span>
-                    </a>
-                </li>
-
-                <!-- Tools-->
-                <li class="nav-item dropdown keep-open">
-                    <a class="nav-link dropdown-toggle" href="#"
-                            role="button" data-bs-toggle="dropdown" >
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
-                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                        </span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <!--use font awesome icons-->
-                        <a id="measheader" class="dropdown-item navbar-text" href="#"> <strong><span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-wrench fa-stack-1x buttonfg"></i>
-                        </span>Measurements</strong> </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item navbar-text" href="#" id="measPoint"> <i class="fa fa-bullseye fa-fw fa-lg"></i> Point </a>
-                        <a class="dropdown-item navbar-text" href="#" id="measDistance"> <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance </a>
-                        <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
-                        <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
-                        <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
-                        <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
-                        <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
-                        <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
-                    </div>
-                </li>
-
-                <!-- Appearance-->
-                <li class="nav-item dropdown keep-open">
-                    <a class="nav-link dropdown-toggle" href="#"
-                            role="button" data-bs-toggle="dropdown" >
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
-                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right" >
-                        <li id="appearanceheader">
-                            <a class="dropdown-item navbar-text" href="#">
-                                <strong>
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                                        <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
-                                    </span>
-                                    Appearance
-                                </strong>
-                            </a>
-                        </li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li>
-                            <a id="btntogglelighting" class="dropdown-item navbar-text" href="#">
-                                <i id="btnlightbulb" class="fa fa-lightbulb-o fa-fw fa-lg "></i>
-                                Toggle Lighting
-                            </a>
-                        </li>
-                        <li>
-                            <a id="btntoggleHQ" class="dropdown-item navbar-text" href="#">
-                                <i id="btnHQ" class="fa fa-star fa-fw fa-lg "></i>
-                                Toggle HQ Points
-                            </a>
-                        </li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li>
-                            <a class="dropdown-item navbar-text" href="#">
-                                <div class="input-group">
-                                    <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
-                                    <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
-                                </div>
-                                <div id="sliderPointBudget"></div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item navbar-text" href="#">
-                                <div class="input-group">
-                                    <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
-                                    <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
-                                </div>
-                                <div id="sliderPointSize"></div>
-                            </a>
-                        </li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li class="dropdown-item navbar-text">
-                            <div class="input-group">
-                                <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
-                                <input id="colorblendValue" type="text" class="form-control" placeholder="0">
-                            </div>
-                            <div id="sliderColorBlend"></div>
-                            <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
-                                <button id="btnRGB" type="button" class="btn btn-secondary" >RGB</button>
-                                <button id="btnBoth" type="button" class="btn btn-secondary" >Both</button>
-                                <button id="btnElev" type="button" class="btn btn-secondary" >Elev</button>
-                            </div>
-                        </li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li>
-                            <a class="dropdown-item navbar-text" href="#">
-                                Elevation Range: <br>
-                                <div id="slider-range"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon navbar-text" style="width:140px">Min:</span>
-                                    <input id="minval" type="text" class="form-control" name="email" placeholder="0">
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon navbar-text" style="width:140px">Max:</span>
-                                    <input id="maxval" type="text" class="form-control" name="password" placeholder="10">
-                                </div>
-                            </a>
-                        </li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li>
-                            <a class="dropdown-item navbar-text" href="#">
-                                Colormap: <br>
-                                <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
-                                    <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
-                                    <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item navbar-text" href="#">
-                                <div class="input-group">
-                                    <span class="input-group-addon navbar-text" style="width:140px">Image Opacity:</span>
-                                    <input id="sliderImageOpacityValue" type="text" class="form-control" placeholder="100%">
-                                </div>
-                                <div id="sliderImageOpacity"></div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!--
-                <li class="nav-item dropdown keep-open">
-                    <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-download fa-stack-1x buttonfg"></i>
-                            <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right" >
-                        <li id="downloadheader"><a class="dropdown-item navbar-text" href="#"> <strong>
-                            <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                    <!--Toggle Image -->
+                    <li class="nav-item">
+                        <input type="checkbox" class="btn-check" id="toggleImages" autocomplete="off" checked>
+                        <label class="btn btn-outline-success" for="toggleImages">
+                            <span class="fa-layers fa-fw fa-2x">
+                                <i class="fa-solid fa-camera"></i>
+                                <span class="fa-layers-counter fa-layers-top-right cameraCount" id="btnImageCount" style="background-color: tomato;">0</span>
                             </span>
-                            Download Data</strong> </a></li>
-                        <li><div class="dropdown-divider"></div></li>
-                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_las.txt">
-                            <i class="fa fa-cloud fa-fw fa-lg "></i>
-                            Pointcloud</a>
-                        </li>
+                        </label>
+                    </li>
 
-                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_ortho.txt">
-                            <i class="fa fa-image fa-fw fa-lg "></i>
-                            Orthophoto</a>
-                        </li>
+                    <!--Next Image Arrow -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="imgright">
+                            <i class="fa-solid fa-3x fa-arrow-right"></i>
+                        </a>
+                    </li>
 
-                        <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_meta.txt">
-                            <i class="fa fa-file fa-fw fa-lg "></i>
-                            Metadata</a>
-                        </li>
-                    </ul>
-                </li>
-                -->
-                <!--
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#infomodal">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-info fa-stack-1x buttonfg"></i>
-                        </span>
-                    </a>
-                </li>
-                -->
-                <!--
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#helpmodal" onclick="$('#carouselExampleIndicators').carousel(0);">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
-                            <i class="fa fa-question fa-stack-1x buttonfg"></i>
-                        </span>
-                    </a>
-                </li>
-                -->
-            </ul>
-        </div>
-    </div>
-</nav>
+                    <!-- Toggle Map-->
+                    <li class="nav-item">
+                        <input type="checkbox" class="btn-check" id="toggleMap" autocomplete="off" checked>
+                        <label class="btn btn-outline-success" for="toggleMap">
+                            <i class="fa-solid fa-map fa-2x"></i>
+                        </label>
+                    </li>
 
-<div id="mapcontainer" class="leaflet_map_container">
-<div id="leafletmap"></div>
-</div>
-<div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;" >
-    <div id="potree_render_area">
-    </div>
+                    <!-- Tools-->
+                    <li class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-wrench fa-fw fa-2x"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li id="measheader" class="dropdown-item navbar-text" href="#">
+                                <h4><i class="fa fa-wrench fa-fw"></i>Measurements</h4>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <a class="dropdown-item navbar-text" href="#" id="measPoint">
+                                <i class="fa fa-bullseye fa-fw fa-lg"></i> Point
+                            </a>
+                            <a class="dropdown-item navbar-text" href="#" id="measDistance">
+                                <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance
+                            </a>
+                            <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
+                            <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
+                            <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
+                            <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
+                            <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
+                            <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
+                        </ul>
+                    </li>
 
-    <div id="attribution" ><a class="attr" href="https://datapoints.io">&nbsp <i class="fa-regular fa-layer-group"></i> Datapoints (2022)&nbsp </a> </div>
-</div>
+                    <!-- Appearance-->
+                    <li class="nav-item dropdown keep-open">
+                        <a class="nav-link dropdown-toggle" href="#"
+                                role="button" data-bs-toggle="dropdown" >
+                            <i class="fa fa-paint-brush fa-2x"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" >
+                            <li id="appearanceheader">
+                                <a class="dropdown-item navbar-text" href="#">
+                                    <strong>
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                            <i class="fa fa-paint-brush fa-stack-1x buttonfg"></i>
+                                        </span>
+                                        Appearance
+                                    </strong>
+                                </a>
+                            </li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li>
+                                <a id="btntogglelighting" class="dropdown-item navbar-text" href="#">
+                                    <i id="btnlightbulb" class="fa fa-lightbulb-o fa-fw fa-lg "></i>
+                                    Toggle Lighting
+                                </a>
+                            </li>
+                            <li>
+                                <a id="btntoggleHQ" class="dropdown-item navbar-text" href="#">
+                                    <i id="btnHQ" class="fa fa-star fa-fw fa-lg "></i>
+                                    Toggle HQ Points
+                                </a>
+                            </li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li>
+                                <a class="dropdown-item navbar-text" href="#">
+                                    <div class="input-group">
+                                        <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
+                                        <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
+                                    </div>
+                                    <div id="sliderPointBudget"></div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item navbar-text" href="#">
+                                    <div class="input-group">
+                                        <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
+                                        <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
+                                    </div>
+                                    <div id="sliderPointSize"></div>
+                                </a>
+                            </li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li class="dropdown-item navbar-text">
+                                <div class="input-group">
+                                    <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
+                                    <input id="colorblendValue" type="text" class="form-control" placeholder="0">
+                                </div>
+                                <div id="sliderColorBlend"></div>
+                                <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
+                                    <button id="btnRGB" type="button" class="btn btn-secondary" >RGB</button>
+                                    <button id="btnBoth" type="button" class="btn btn-secondary" >Both</button>
+                                    <button id="btnElev" type="button" class="btn btn-secondary" >Elev</button>
+                                </div>
+                            </li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li>
+                                <a class="dropdown-item navbar-text" href="#">
+                                    Elevation Range: <br>
+                                    <div id="slider-range"></div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon navbar-text" style="width:140px">Min:</span>
+                                        <input id="minval" type="text" class="form-control" name="email" placeholder="0">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon navbar-text" style="width:140px">Max:</span>
+                                        <input id="maxval" type="text" class="form-control" name="password" placeholder="10">
+                                    </div>
+                                </a>
+                            </li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li>
+                                <a class="dropdown-item navbar-text" href="#">
+                                    Colormap: <br>
+                                    <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
+                                        <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
+                                        <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item navbar-text" href="#">
+                                    <div class="input-group">
+                                        <span class="input-group-addon navbar-text" style="width:140px">Image Opacity:</span>
+                                        <input id="sliderImageOpacityValue" type="text" class="form-control" placeholder="100%">
+                                    </div>
+                                    <div id="sliderImageOpacity"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-<!-- Info Modal -->
-<div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal-header-success">
-                <h4 class="modal-title">Information</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h5>Project</h5>
-                <p>
-                    This project demonstrates a method for visualizing SfM derived pointcloud and image data in a web browser.
-                    Small details, which were not resolved by the SfM pointcloud, can still be visualized using the images.
-                    <br>
-                    <i class="fa fa-github hyp"></i> <a class="hyp" href="https://github.com/hokiespurs/potree-sfm">More information</a>.
-                </p>
-                <hr>
-                <h5>Interface Attribution</h5>
-                <ul>
-                    <li>Pointcloud visualization and tools are built off of <a class="hyp" href="http://potree.org/">potree</a></li>
-                    <li>The map is based on <a class="hyp" href="https://leafletjs.com/">leaflet</a></li>
-                    <li>Basemap is provided by <a class="hyp" href="https://carto.com/location-data-services/basemaps/"> CartoDB</a></li>
-                    <li>The layout utilizes <a class="hyp" href="https://getbootstrap.com/">Bootstrap</a></li>
-                    <li>Coordinate conversions are handled with <a class="hyp" href="http://proj4js.org/">proj4js</a></li>
-                    <li><a class="hyp" href="https://jquery.com/">jQuery</a> and <a class="hyp" href="https://jqueryui.com/">jQuery-ui</a> are used for DOM lookup and sliders</li>
+                    <li class="nav-item dropdown keep-open">
+                        <a class="nav-link dropdown-toggle" href="#"
+                                role="button" data-bs-toggle="dropdown" >
+                            <i class="fa-solid fa-street-view fa-2x"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" >
+                            <li id="earthMode">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Earth Control
+                                </a>
+                            </li>
+                            <li id="orbitMode">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Orbit Mode
+                                </a>
+                            </li>
+                            <li id="flyMode">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fa-solid fa-fw fa-atom-simple"></i>Fly Mode
+                                </a>
+                            </li>
+                            <li id="helicopterMode">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fa-solid fa-fw fa-helicopter"></i>Helicopter Mode
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!--
+                    <li class="nav-item dropdown keep-open">
+                        <a class="nav-link " href="#" role="button" data-toggle="dropdown" >
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                                <i class="fa fa-sort-down fa-stack-1x buttonfg downchevron"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" >
+                            <li id="downloadheader"><a class="dropdown-item navbar-text" href="#"> <strong>
+                                <span class="fa-stack fa-lg">
+                                <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                <i class="fa fa-download fa-stack-1x buttonfg"></i>
+                                </span>
+                                Download Data</strong> </a></li>
+                            <li><div class="dropdown-divider"></div></li>
+                            <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_las.txt">
+                                <i class="fa fa-cloud fa-fw fa-lg "></i>
+                                Pointcloud</a>
+                            </li>
+
+                            <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_ortho.txt">
+                                <i class="fa fa-image fa-fw fa-lg "></i>
+                                Orthophoto</a>
+                            </li>
+
+                            <li><a class="dropdown-item navbar-text" href="assets/04_POINTCLOUD/foo.txt" download="foo_meta.txt">
+                                <i class="fa fa-file fa-fw fa-lg "></i>
+                                Metadata</a>
+                            </li>
+                        </ul>
+                    </li>
+                    -->
+                    <!--
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#infomodal">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                <i class="fa fa-info fa-stack-1x buttonfg"></i>
+                            </span>
+                        </a>
+                    </li>
+                    -->
+                    <!--
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#helpmodal" onclick="$('#carouselExampleIndicators').carousel(0);">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-square fa-stack-2x buttonbg"></i>
+                                <i class="fa fa-question fa-stack-1x buttonfg"></i>
+                            </span>
+                        </a>
+                    </li>
+                    -->
                 </ul>
             </div>
         </div>
+    </nav>
+
+    <div id="mapcontainer" class="leaflet_map_container">
+        <div id="leafletmap"></div>
     </div>
-</div>
 
-<!-- Help Modal -->
-<div class="modal fade" id="helpmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal-header-info">
-                <h4 class="modal-title">Help <a id="helpsubtitle">(1/12) - Layout</a></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;" >
+        <div id="potree_render_area"></div>
+
+        <div id="attribution">
+            <a class="attr" href="https://datapoints.io">
+                <i class="fa fa-layer-group"></i>
+                &nbsp;Datapoints (2022)&nbsp
+            </a>
+        </div>
+
+        <pre id="navigationMode"></pre>
+    </div>
+
+    <!-- Info Modal -->
+    <div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-header-success">
+                    <h4 class="modal-title">Information</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5>Project</h5>
+                    <p>
+                        This project demonstrates a method for visualizing SfM derived pointcloud and image data in a web browser.
+                        Small details, which were not resolved by the SfM pointcloud, can still be visualized using the images.
+                        <br>
+                        <i class="fa fa-github hyp"></i> <a class="hyp" href="https://github.com/hokiespurs/potree-sfm">More information</a>.
+                    </p>
+                    <hr>
+                    <h5>Interface Attribution</h5>
+                    <ul>
+                        <li>Pointcloud visualization and tools are built off of <a class="hyp" href="http://potree.org/">potree</a></li>
+                        <li>The map is based on <a class="hyp" href="https://leafletjs.com/">leaflet</a></li>
+                        <li>Basemap is provided by <a class="hyp" href="https://carto.com/location-data-services/basemaps/"> CartoDB</a></li>
+                        <li>The layout utilizes <a class="hyp" href="https://getbootstrap.com/">Bootstrap</a></li>
+                        <li>Coordinate conversions are handled with <a class="hyp" href="http://proj4js.org/">proj4js</a></li>
+                        <li><a class="hyp" href="https://jquery.com/">jQuery</a> and <a class="hyp" href="https://jqueryui.com/">jQuery-ui</a> are used for DOM lookup and sliders</li>
+                    </ul>
+                </div>
             </div>
-            <div class="modal-body" id="helpmodalbody">
-                <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
-                        <div class="carousel-inner" data-interval="false">
-                            <!-- LAYOUT-->
-                            <div class="carousel-item active" id="carousel_1">
-                                <img class="d-block w-100" src="doc/howto/01_LAYOUT.png" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">The main sections of the project are the interactive map in the upper left, the toolbar across the top, and the main 3D scene. The main scene has both the pointcloud and image pyramids. </p>
-                            </div>
+        </div>
+    </div>
 
-                            <!-- IMAGE PYRAMIDS-->
-                            <div class="carousel-item " id="carousel_2">
-                                <img class="d-block w-100" src="doc/howto/02_IMAGEPYRAMIDS.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">"Image Pyramids" are placed in the scene to represent where an image was taken from. The image plane is placed at a position and orientation computed through SfM processing, such that it aligns with the pointcloud when viewed from the right position.</p>
-                            </div>
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-header-info">
+                    <h4 class="modal-title">Help <a id="helpsubtitle">(1/12) - Layout</a></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="helpmodalbody">
+                    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+                            <div class="carousel-inner" data-interval="false">
+                                <!-- LAYOUT-->
+                                <div class="carousel-item active" id="carousel_1">
+                                    <img class="d-block w-100" src="doc/howto/01_LAYOUT.png" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">The main sections of the project are the interactive map in the upper left, the toolbar across the top, and the main 3D scene. The main scene has both the pointcloud and image pyramids. </p>
+                                </div>
 
-                            <!-- SIMPLIFY LAYOUT-->
-                            <div class="carousel-item " id="carousel_3">
-                                <img class="d-block w-100" src="doc/howto/03_SIMPLIFY.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">The view can be simplified to turn off the map and images using the toggle buttons on the toolbar.</p>
-                            </div>
+                                <!-- IMAGE PYRAMIDS-->
+                                <div class="carousel-item " id="carousel_2">
+                                    <img class="d-block w-100" src="doc/howto/02_IMAGEPYRAMIDS.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">"Image Pyramids" are placed in the scene to represent where an image was taken from. The image plane is placed at a position and orientation computed through SfM processing, such that it aligns with the pointcloud when viewed from the right position.</p>
+                                </div>
 
-                            <!-- NAVIGATION-->
-                            <div class="carousel-item " id="carousel_4">
-                                <img class="d-block w-100" src="doc/howto/04_NAV.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">Use the left mouse button to orbit around a point.  Use the scroll wheel to zoom.  Use the right mouse button to translate the view.  Double click a point to fly to it.</p>
-                            </div>
+                                <!-- SIMPLIFY LAYOUT-->
+                                <div class="carousel-item " id="carousel_3">
+                                    <img class="d-block w-100" src="doc/howto/03_SIMPLIFY.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">The view can be simplified to turn off the map and images using the toggle buttons on the toolbar.</p>
+                                </div>
 
-                            <!-- NAVIGATION TO LOOK THROUGH-->
-                            <div class="carousel-item " id="carousel_5">
-                                <img class="d-block w-100" src="doc/howto/05_LOOKTHROUGH.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">"Look Through" mode is a view where the viewpoint is placed at the exact position an image was taken from.  The image plane is placed at a position and orientation such that it aligns with the pointcloud.
-                                    This can be seen as holding a picture frame in front of a person.  The two ways to enter this mode are: 1) Click a desired image pyramid.  2) Click the Forward / Backward arrow on the toolbar.
-                                    This will move the current view to align with either the selected image plane, or the previous/next image.</p>
-                            </div>
+                                <!-- NAVIGATION-->
+                                <div class="carousel-item " id="carousel_4">
+                                    <img class="d-block w-100" src="doc/howto/04_NAV.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">Use the left mouse button to orbit around a point.  Use the scroll wheel to zoom.  Use the right mouse button to translate the view.  Double click a point to fly to it.</p>
+                                </div>
 
-                            <!-- NAVIGATION IN LOOK THROUGH MODE-->
-                            <div class="carousel-item " id="carousel_6">
-                                <img class="d-block w-100" src="doc/howto/06_NAVTHROUGH.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">Use the left mouse button to pan/tilt the camera.
-                                Use the scroll wheel to zoom in and out (this is actually changing the field of view).
-                                Use the left mouse button to translate the camera position, which will exit the "look-through" view.</p>
-                            </div>
+                                <!-- NAVIGATION TO LOOK THROUGH-->
+                                <div class="carousel-item " id="carousel_5">
+                                    <img class="d-block w-100" src="doc/howto/05_LOOKTHROUGH.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">"Look Through" mode is a view where the viewpoint is placed at the exact position an image was taken from.  The image plane is placed at a position and orientation such that it aligns with the pointcloud.
+                                        This can be seen as holding a picture frame in front of a person.  The two ways to enter this mode are: 1) Click a desired image pyramid.  2) Click the Forward / Backward arrow on the toolbar.
+                                        This will move the current view to align with either the selected image plane, or the previous/next image.</p>
+                                </div>
 
-                            <!-- MAP LAYOUT-->
-                            <div class="carousel-item " id="carousel_7">
-                                <img class="d-block w-100" src="doc/howto/07_MAP.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">The interactive map box (which can be resized by dragging the lower right corner), contains a high resolution orthophoto of the scene overlaid on top of a simple basemap.
-                                    The orange polygon represents the approximate footprint of the current view, while the cyan polygon represents the footprint of the current "look-through" image.
-                                    There is a small, draggable dot which reprents the horizontal position of the current view.
-                                </p>
-                            </div>
+                                <!-- NAVIGATION IN LOOK THROUGH MODE-->
+                                <div class="carousel-item " id="carousel_6">
+                                    <img class="d-block w-100" src="doc/howto/06_NAVTHROUGH.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">Use the left mouse button to pan/tilt the camera.
+                                    Use the scroll wheel to zoom in and out (this is actually changing the field of view).
+                                    Use the left mouse button to translate the camera position, which will exit the "look-through" view.</p>
+                                </div>
 
-                            <!-- MEASURE BUTTONS-->
-                            <div class="carousel-item " id="carousel_8">
-                                <img class="d-block w-100" src="doc/howto/08_MEASUREMENTS.png" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">The measurements toolbar enables 4 basic measurements on the pointcloud (Point, Distance, Height, and Angle.)  These measurements are displayed on the screen until the "Remove All" button is clicked.</p>
-                            </div>
+                                <!-- MAP LAYOUT-->
+                                <div class="carousel-item " id="carousel_7">
+                                    <img class="d-block w-100" src="doc/howto/07_MAP.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">The interactive map box (which can be resized by dragging the lower right corner), contains a high resolution orthophoto of the scene overlaid on top of a simple basemap.
+                                        The orange polygon represents the approximate footprint of the current view, while the cyan polygon represents the footprint of the current "look-through" image.
+                                        There is a small, draggable dot which reprents the horizontal position of the current view.
+                                    </p>
+                                </div>
 
-                            <!-- LOOK AT FUNCTIONALITY-->
-                            <div class="carousel-item " id="carousel_11">
-                                <img class="d-block w-100" src="doc/howto/11_LOOKAT.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px"> The "Look at" button can be used to filter the image planes by images that can see that point.
-                                    Using the filter button enables and disables filtering by images.
-                                    Using the "Visible Point" button turns the magenta dot off, but maintains the functionality.
-                                    As you step through different "look through" views using the arrow keys, the camera will stay locked onto this point, and skip images which don't see the point.</p>
-                            </div>
+                                <!-- MEASURE BUTTONS-->
+                                <div class="carousel-item " id="carousel_8">
+                                    <img class="d-block w-100" src="doc/howto/08_MEASUREMENTS.png" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">The measurements toolbar enables 4 basic measurements on the pointcloud (Point, Distance, Height, and Angle.)  These measurements are displayed on the screen until the "Remove All" button is clicked.</p>
+                                </div>
 
-                            <!-- APPEARANCE TOOLS-->
-                            <div class="carousel-item " id="carousel_9">
-                                <img class="d-block w-100" src="doc/howto/09_APPEARANCE.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px">There are various appearance sliders and buttons which you can use to change the quality and color of the pointcloud. </p>
-                            </div>
+                                <!-- LOOK AT FUNCTIONALITY-->
+                                <div class="carousel-item " id="carousel_11">
+                                    <img class="d-block w-100" src="doc/howto/11_LOOKAT.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px"> The "Look at" button can be used to filter the image planes by images that can see that point.
+                                        Using the filter button enables and disables filtering by images.
+                                        Using the "Visible Point" button turns the magenta dot off, but maintains the functionality.
+                                        As you step through different "look through" views using the arrow keys, the camera will stay locked onto this point, and skip images which don't see the point.</p>
+                                </div>
 
-                            <!-- LOOK AT FUNCTIONALITY-->
-                            <div class="carousel-item " id="carousel_12">
-                                <img class="d-block w-100" src="doc/howto/12_OPACITY.gif" width = "100%" alt="First slide">
-                                <hr>
-                                <p style="height:100px"> When in "look through" mode, the opacity of the image can be changed with the appearance slider.</p>
-                            </div>
+                                <!-- APPEARANCE TOOLS-->
+                                <div class="carousel-item " id="carousel_9">
+                                    <img class="d-block w-100" src="doc/howto/09_APPEARANCE.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">There are various appearance sliders and buttons which you can use to change the quality and color of the pointcloud. </p>
+                                </div>
 
-                            <!-- DOWNLOAD BUTTONS-->
-                            <div class="carousel-item " id="carousel_10">
-                                <img class="d-block w-100" src="doc/howto/13_DOWNLOADS.png" alt="First slide">
-                                <hr>
-                                <p style="height:100px">The downloads dropdown can be used to download the pointcloud, orthophoto, and metadata. *Note: Rather that taxing the OSU research server with Gb of file transfers, small text files are used to demonstrate the functionality.</p>
+                                <!-- LOOK AT FUNCTIONALITY-->
+                                <div class="carousel-item " id="carousel_12">
+                                    <img class="d-block w-100" src="doc/howto/12_OPACITY.gif" width = "100%" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px"> When in "look through" mode, the opacity of the image can be changed with the appearance slider.</p>
+                                </div>
+
+                                <!-- DOWNLOAD BUTTONS-->
+                                <div class="carousel-item " id="carousel_10">
+                                    <img class="d-block w-100" src="doc/howto/13_DOWNLOADS.png" alt="First slide">
+                                    <hr>
+                                    <p style="height:100px">The downloads dropdown can be used to download the pointcloud, orthophoto, and metadata. *Note: Rather that taxing the OSU research server with Gb of file transfers, small text files are used to demonstrate the functionality.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button id="prevBtn" type="button" class="btn btn-secondary" onclick="stepCarousel('prev')">Previous</button>
-                <button id="nextBtn" type="button" class="btn btn-primary" onclick="stepCarousel('next')">Next</button>
+                <div class="modal-footer">
+                    <button id="prevBtn" type="button" class="btn btn-secondary" onclick="stepCarousel('prev')">Previous</button>
+                    <button id="nextBtn" type="button" class="btn btn-primary" onclick="stepCarousel('next')">Next</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-
-<!-- <script src="assets/js/loadpointcloud.js"></script> -->
-<!-- <script src="assets/js/addCameras.js"></script> -->
-<!-- <script src="assets/js/addLeafletMap.js"></script> -->
-
 </body>
 </html>
