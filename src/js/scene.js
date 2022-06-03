@@ -5,7 +5,7 @@ export class Scene {
   cameras = [];
   frustrum = [];
   SCALEIMG = 3;
-  mouse = { x: 0, y: 0, doUse: false };
+  mouse = { 'x': 0, 'y': 0, 'doUse': false };
   INTERSECTED = null;
   camsvisible = true;
   cameraplaneview = false;
@@ -19,25 +19,29 @@ export class Scene {
   camdir = '';
   imageplane = null;
 
-  constructor(target, camdir, camPix, camFocal) {
+  constructor (target, camdir, camPix, camFocal) {
     this.viewer = new Potree.Viewer(document.getElementById(target));
     this.viewer.setEDLEnabled(true);
     this.viewer.setFOV(60);
     this.viewer.setPointBudget(1 * 1000 * 1000);
     this.viewer.setEDLEnabled(false);
-    this.viewer.setBackground("gradient"); // ["skybox", "gradient", "black", "white"];
+    this.viewer.setBackground('gradient'); // ["skybox", "gradient", "black", "white"];
     this.viewer.loadSettingsFromURL();
 
     this.camdir = camdir;
     this.camPix = camPix;
     this.camFocal = camFocal;
+
+    this.viewer.minNodeSize = 50;
+
+    this.measuringTool = new Potree.MeasuringTool(this.viewer);
   }
 
-  addCamera(camera) {
+  addCamera (camera) {
     this.cameras.push(camera);
   }
 
-  addFrustrum(obj, i) {
+  addFrustrum (obj, i) {
     obj.isFiltered = false;
     obj.myImageNum = i;
 
@@ -48,7 +52,7 @@ export class Scene {
   /**
    * create a plane to hold the full sized images
    */
-  addImagePlane() {
+  addImagePlane () {
     if (this.cameras.length > 0) {
       this.imageplane = this.cameras[0].makeImagePlane(
         this.camPix,
@@ -62,13 +66,15 @@ export class Scene {
     }
   }
 
-  get ncams() {
+  get ncams () {
     return this.cameras.length;
   }
-  get currentid() {
+
+  get currentid () {
     return this._currentid;
   }
-  set currentid(id) {
+
+  set currentid (id) {
     // loop around if we reach either end of available cameras
     if (id > (this.ncams - 1)) {
       id = 0;
@@ -81,7 +87,7 @@ export class Scene {
   }
 
   // RETURN CURRENT CAMERA POSITION [X, Y, Z]
-  get currentPos() {
+  get currentPos () {
     return [
       Math.round(this.viewer.scene.view.position.x * 100) / 100,
       Math.round(this.viewer.scene.view.position.y * 100) / 100,
@@ -93,20 +99,20 @@ export class Scene {
    * get the scene camera orientation and position
    * @returns {Object}
    */
-  get cameraXYZPT() {
+  get cameraXYZPT () {
     return {
-      x: this.viewer.scene.view.position.x,
-      y: this.viewer.scene.view.position.y,
-      z: this.viewer.scene.view.position.z,
-      yaw: this.viewer.scene.view.yaw,
-      pitch: this.viewer.scene.view.pitch
-    }
+      'x': this.viewer.scene.view.position.x,
+      'y': this.viewer.scene.view.position.y,
+      'z': this.viewer.scene.view.position.z,
+      'yaw': this.viewer.scene.view.yaw,
+      'pitch': this.viewer.scene.view.pitch
+    };
   }
 
   /**
    * https://threejs.org/docs/?q=raycas#api/en/core/Raycaster
    */
-  checkIntersections() {
+  checkIntersections () {
     // console.log('checkIntersections()', this.mouse);
     const raycaster = this.raycaster;
     const viewer = this.viewer;
@@ -130,7 +136,7 @@ export class Scene {
               if (this.INTERSECTED !== intersects[i].object) { // if it isn't the previous object
                 this.clearIntersected();
 
-                this.INTERSECTED = intersects[i].object; //make this the new one
+                this.INTERSECTED = intersects[i].object; // make this the new one
                 this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex(); // get its color
                 intersects[i].object.material.color.set(0xff0000); // change it's color
               }
@@ -149,7 +155,7 @@ export class Scene {
   /**
    *
    */
-  clearIntersected() {
+  clearIntersected () {
     if (this.INTERSECTED) {
       this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
     }
@@ -161,52 +167,52 @@ export class Scene {
    *
    * @param {*} id
    */
-  flyToCam(id) {
+  flyToCam (id) {
     console.log('flyToCam(%i)', id, this.camsvisible);
 
     const cam = this.cameras[id];
 
     if (id < this.ncams) {
-        this.imageplane.visible = false;
-        this.viewer.fpControls.stop();
+      this.imageplane.visible = false;
+      this.viewer.fpControls.stop();
 
-        // this.changeToOrbitMode();
-        this.changeToFlyMode();
+      // this.changeToOrbitMode();
+      this.changeToFlyMode();
 
-        // move the global view to the position of image[id]
-        this.moveCamera(id);
+      // move the global view to the position of image[id]
+      this.moveCamera(id);
 
-        // alter the plane to match this camera
-        this.changeImagePlane(id);
+      // alter the plane to match this camera
+      this.changeImagePlane(id);
 
-        // store position so we can test for movement
-        this.lastXYZ = [
-          Math.round(cam.x * 100) / 100,
-          Math.round(cam.y * 100) / 100,
-          Math.round(cam.z * 100) / 100
-        ];
+      // store position so we can test for movement
+      this.lastXYZ = [
+        Math.round(cam.x * 100) / 100,
+        Math.round(cam.y * 100) / 100,
+        Math.round(cam.z * 100) / 100
+      ];
 
-        // these don't seem to be in use
-        /*
+      // these don't seem to be in use
+      /*
         $('#toggleimageplane').removeClass('disabled');
         $('#togglecam').addClass('disabled');
         */
 
-        // turn off the camera position thumbnails
-        this.turnImagesOff();
+      // turn off the camera position thumbnails
+      this.turnImagesOff();
 
-        // store details
-        this.currentid = id;
-        this.cameraplaneview = true;
-        // this.camsvisible = true;
+      // store details
+      this.currentid = id;
+      this.cameraplaneview = true;
+      // this.camsvisible = true;
 
-        // TODO: work out what this does
-        if (this.lookAtPtNum !== null) {
-            const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
-            this.viewer.scene.view.lookAt(xyzlookat);
-        }
+      // TODO: work out what this does
+      if (this.lookAtPtNum !== null) {
+        const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
+        this.viewer.scene.view.lookAt(xyzlookat);
+      }
     } else {
-        console.log(id.toString() + 'Out of Range (Max = ' + this.ncams.toString() + ')')
+      console.log(id.toString() + 'Out of Range (Max = ' + this.ncams.toString() + ')');
     }
   }
 
@@ -216,11 +222,11 @@ export class Scene {
    * @param {*} steps
    * @param {*} tottime
    */
-  flyTo(endpt, steps, tottime) {
+  flyTo (endpt, steps, tottime) {
     XYZPTstart = getCameraXYZPT();
     XYZPTend = endpt;
     flyTimer = setInterval(stepflyTo, tottime / steps);
-    setTimeout(function() {
+    setTimeout(function () {
       clearTimeout(flyTimer);
     }, tottime);
 
@@ -234,7 +240,7 @@ export class Scene {
   /**
   *
   */
-  stepflyTo(deltabetween) {
+  stepflyTo (deltabetween) {
     this.viewer.scene.view.position.x += deltabetween[0];
     this.viewer.scene.view.position.y += deltabetween[1];
     this.viewer.scene.view.position.z += deltabetween[2];
@@ -247,9 +253,9 @@ export class Scene {
    *
    * @param {*} id
    */
-  changeImagePlane(id) {
+  changeImagePlane (id) {
     const camera = this.cameras[id];
-    console.log('changeImagePlane(%i) %o', id, this.imageplane)
+    console.log('changeImagePlane(%i) %o', id, this.imageplane);
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
@@ -275,15 +281,14 @@ export class Scene {
 
     // trigger a custom event to say new image loaded
     const detail = { 'view': false, 'count': id };
-    const event = new CustomEvent('imageViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('imageViewChanged', { 'bubbles': true, detail });
     document.dispatchEvent(event);
-
   }
 
   /**
    * hide the thumbnails
    */
-  turnImagesOff() {
+  turnImagesOff () {
     const nimages = this.cameras.length;
     this.camsvisible = false;
     for (let j = 0; j < nimages; j++) {
@@ -291,14 +296,14 @@ export class Scene {
     }
 
     const detail = { 'view': false, 'count': 0 };
-    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, detail });
     document.dispatchEvent(event);
   }
 
   /**
    * show the thumbnails
    */
-  turnImagesOn() {
+  turnImagesOn () {
     console.log('turnImagesOn()', this.camsvisible);
     const nimages = this.cameras.length;
     this.camsvisible = true;
@@ -308,22 +313,22 @@ export class Scene {
     this.filterImages(this.camPix, this.camFocal);
 
     const detail = { 'view': true, 'count': nimages };
-    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('camerasViewChanged', { 'bubbles': true, detail });
     document.dispatchEvent(event);
-}
+  }
 
   /**
    * toggle the state of showing thumbnails
    */
- toggleImagesVisible() {
-    let nimages = this.cameras.length;
+  toggleImagesVisible () {
+    const nimages = this.cameras.length;
     this.camsvisible = !this.camsvisible;
     for (let j = 0; j < nimages; j++) {
-        this.frustrum[j].visible = this.camsvisible;
+      this.frustrum[j].visible = this.camsvisible;
     }
 
     const detail = { 'view': false, 'count': nimages };
-    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, 'detail': detail });
+    const event = new CustomEvent('imagesViewChanged', { 'bubbles': true, detail });
     document.dispatchEvent(event);
 
     // wantcamsvisible = camsvisible; // ??
@@ -334,7 +339,7 @@ export class Scene {
    * @param {*} camPix
    * @param {*} camFocal
    */
-  filterImages(camPix, camFocal) {
+  filterImages (camPix, camFocal) {
     if (this.lookAtPtNum !== null & this.dofilterimages === true) {
       const xyzlookat = this.viewer.scene.measurements[this.lookAtPtNum].children[3].getWorldPosition();
 
@@ -347,7 +352,7 @@ export class Scene {
       const cx = camPix[0] / 2;
       const cy = camPix[1] / 2;
 
-      for (let imagenum = 0; imagenum < ncams; imagenum++) {
+      for (let imagenum = 0; imagenum < this.ncams; imagenum++) {
         const c = this.cameras[imagenum];
         const Xc = c.x;
         const Yc = c.y;
@@ -372,7 +377,7 @@ export class Scene {
    *
    * @param {*} id
    */
-  moveCamera(id) {
+  moveCamera (id) {
     const cam = this.cameras[id];
     console.log('moveCamera(%o)', cam);
 
@@ -382,7 +387,7 @@ export class Scene {
     this.viewer.scene.view.position.z = cam.z;
 
     // https://threejs.org/docs/index.html?q=euler#api/en/math/Euler
-    let a = new THREE.Euler(
+    const a = new THREE.Euler(
       cam.roll * Math.PI / 180,
       cam.pitch * Math.PI / 180,
       cam.yaw * Math.PI / 180,
@@ -391,7 +396,7 @@ export class Scene {
 
     // https://threejs.org/docs/index.html?q=vector#api/en/math/Vector3
     // this appears to be one unit less in the Z axis
-    let b = new THREE.Vector3(0, 0, -1);
+    const b = new THREE.Vector3(0, 0, -1);
 
     // apply the Euler rotational transform to orientate the global view
     // https://threejs.org/docs/index.html?q=vector#api/en/math/Vector3.applyEuler
@@ -400,7 +405,7 @@ export class Scene {
     b.y = b.y + cam.y;
     b.z = b.z + cam.z;
 
-    //var lookatpt = [camX[id]+b.x, camY[id]+b.y, camZ[id]+b.z];
+    // var lookatpt = [camX[id]+b.x, camY[id]+b.y, camZ[id]+b.z];
     this.viewer.scene.view.lookAt(b);
 
     // viewer.scene.view.pitch = (camRoll[id] -90)* Math.PI/180;
@@ -411,8 +416,8 @@ export class Scene {
   /**
    * CHANGE CAMERA MODE
    */
-  changeToFlyMode() {
-    //this.viewer.setNavigationMode(Potree.FirstPersonControls);
+  changeToFlyMode () {
+    // this.viewer.setNavigationMode(Potree.FirstPersonControls);
     this.viewer.setControls(this.viewer.fpControls);
     this.viewer.fpControls.lockElevation = false;
 
@@ -420,7 +425,7 @@ export class Scene {
     document.dispatchEvent(event);
   }
 
-  changeToOrbitMode() {
+  changeToOrbitMode () {
     // this.viewer.setNavigationMode(Potree.OrbitControls);
     this.viewer.setControls(this.viewer.orbitControls);
     this.viewer.fpControls.lockElevation = false;
@@ -429,7 +434,7 @@ export class Scene {
     document.dispatchEvent(event);
   }
 
-  changeToHelicopterMode() {
+  changeToHelicopterMode () {
     this.viewer.setControls(this.viewer.fpControls);
     this.viewer.fpControls.lockElevation = true;
 
@@ -437,7 +442,7 @@ export class Scene {
     document.dispatchEvent(event);
   }
 
-  changeToEarthMode() {
+  changeToEarthMode () {
     this.viewer.setControls(this.viewer.earthControls);
     this.viewer.fpControls.lockElevation = false;
 

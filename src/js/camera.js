@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export class Camera {
-  constructor(imageNum, thumbPath, imagePath, roll, pitch, yaw, x, y, z) {
+  constructor (imageNum, thumbPath, imagePath, roll, pitch, yaw, x, y, z) {
     this.imageNum = imageNum;
     this.thumbPath = thumbPath;
     this.imagePath = imagePath;
@@ -36,24 +36,13 @@ export class Camera {
     const imagematerial = new THREE.MeshBasicMaterial({ 'map': imagetexture, 'side': THREE.DoubleSide });
     const image = new THREE.Mesh(imageplane, imagematerial);
 
-    console.log(imageplane.attributes);
-
     // create a pyramid shape to indicate the direction
     const pyramidgeometry = new THREE.BufferGeometry();
 
     // each Vector3 represents a point in space
     const height = 0.6;
     const pts = [
-      // base, formed of two triangles
-      /*
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(pixx, 0, 0),
-      new THREE.Vector3(pixx, pixy, 0),
-
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(pixx, pixy, 0),
-      new THREE.Vector3(0, pixy, 0),
-      */
+      // no base needed
       // front-right
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(pixx, 0, 0),
@@ -69,7 +58,7 @@ export class Camera {
       // front-right
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, pixy, 0),
-      new THREE.Vector3(pixx / 2, pixy / 2, height),
+      new THREE.Vector3(pixx / 2, pixy / 2, height)
     ];
 
     pyramidgeometry.setFromPoints(pts);
@@ -80,8 +69,8 @@ export class Camera {
     pyramidgeometry.userData = { 'frustrum': true, 'imageNum': this.imageNum };
 
     const pyramidmaterial = new THREE.MeshBasicMaterial({
-      color: 0xf8f9fa,
-      wireframe: true
+      'color': 0xf8f9fa,
+      'wireframe': true
     });
     const pyramid = new THREE.Mesh(pyramidgeometry, pyramidmaterial);
 
@@ -117,7 +106,7 @@ export class Camera {
    *
    * @returns {THREE.Object3D}
    */
-  makeImagePlane(camPix, camFocal) {
+  makeImagePlane (camPix, camFocal) {
     // instantiate a loader https://threejs.org/docs/?q=texture#api/en/loaders/TextureLoader
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = 'anonymous';
@@ -133,7 +122,7 @@ export class Camera {
     const imageMaterial = new THREE.MeshBasicMaterial({ 'map': imageTexture, 'side': THREE.DoubleSide });
     const image = new THREE.Mesh(imagePlane, imageMaterial);
 
-    const imageObj  = new THREE.Object3D();
+    const imageObj = new THREE.Object3D();
 
     imageObj.add(image);
 
@@ -145,11 +134,11 @@ export class Camera {
     return imageObj;
   }
 
-  showCamera(viewer) {
+  showCamera (viewer) {
     viewer.scene.scene.remove(this);
   }
 
-  hideCamera(viewer) {
+  hideCamera (viewer) {
 
   }
 }

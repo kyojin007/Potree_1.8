@@ -114,7 +114,7 @@
 
                 <!--Create class ml-auto for the navbar items you want on the right.-->
                 <ul class="navbar-nav ml-auto" >
-                    <!-- Tools-->
+                    <!-- Tools
                     <li class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -125,20 +125,11 @@
                                 <h4><i class="fa fa-wrench fa-fw"></i>Measurements</h4>
                             </li>
                             <li class="dropdown-divider"></li>
-                            <a class="dropdown-item navbar-text" href="#" id="measPoint">
-                                <i class="fa fa-bullseye fa-fw fa-lg"></i> Point
-                            </a>
-                            <a class="dropdown-item navbar-text" href="#" id="measDistance">
-                                <i class="fa fa-arrows-h fa-fw fa-lg"></i> Distance
-                            </a>
-                            <a class="dropdown-item navbar-text" href="#" id="measHeight"> <i class="fa fa-arrows-v fa-fw fa-lg"></i> Height </a>
-                            <a class="dropdown-item navbar-text" href="#" id="measAngle"> <i class="fa fa-share-alt fa-fw fa-lg"></i> Angle </a>
                             <a class="dropdown-item navbar-text" href="#" id="measLookAt"> <i id="lookatbtn" class="fa fa-crosshairs fa-fw fa-lg"></i> Look At </a>
                             <a class="dropdown-item navbar-text" href="#" id="lookAtFilter"> &nbsp &nbsp <i id="filterbtn" class="fa fa-filter fa-fw fa-lg"></i> Filter Images </a>
                             <a class="dropdown-item navbar-text" href="#" id="toggleLookAtPtVisible"> &nbsp &nbsp <i id="lookatvisible" class="fa fa-circle fa-fw fa-lg buttonfgclicked"></i> Visible Point </a>
-                            <a class="dropdown-item navbar-text" href="#" id="measClear"> <i class="fa fa-close fa-fw fa-lg"></i> Remove All</a>
                         </ul>
-                    </li>
+                    </li> -->
 
                     <!-- Appearance-->
                     <li class="nav-item dropdown keep-open">
@@ -172,25 +163,17 @@
                                 </a>
                             </li>
                             <li><div class="dropdown-divider"></div></li>
-                            <li>
-                                <a class="dropdown-item navbar-text" href="#">
-                                    <div class="input-group">
-                                        <span class="input-group-addon navbar-text" style="width:140px">Number Of Points:</span>
-                                        <input id="sliderPointBudgetValue" type="text" class="form-control" placeholder="1M">
-                                    </div>
-                                    <div id="sliderPointBudget"></div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item navbar-text" href="#">
-                                    <div class="input-group">
-                                        <span class="input-group-addon navbar-text" style="width:140px">Point Size:</span>
-                                        <input id="sliderPointSizeValue" type="text" class="form-control" placeholder="50">
-                                    </div>
-                                    <div id="sliderPointSize"></div>
-                                </a>
-                            </li>
+
+                            <form class="px-4 py-3">
+                                <label for="pointBudget" class="form-label">Point Budget</label>
+                                <input type="range" class="form-range" value="1000000" min="1000000" max="10000000" step="500000" id="pointBudget">
+
+                                <label for="pointSize" class="form-label">Min Point Size</label>
+                                <input type="range" class="form-range" value="50" min="0" max="400" step="5" id="pointSize">
+                            </form>
+
                             <li><div class="dropdown-divider"></div></li>
+
                             <li class="dropdown-item navbar-text">
                                 <div class="input-group">
                                     <span class="input-group-addon navbar-text" style="width:140px">Color Blend:</span>
@@ -222,14 +205,14 @@
                             <li>
                                 <a class="dropdown-item navbar-text" href="#">
                                     Colormap: <br>
-                                    <div class="btn-group btn-group-justified" role="group" aria-label="Second group">
-                                        <button id="btnColormap1" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap2" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap3" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap4" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap5" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap6" type="button" class="btn btn-secondary" >&nbsp</button>
-                                        <button id="btnColormap7" type="button" class="btn btn-secondary" >&nbsp</button>
+                                    <div class="btn-group btn-group-justified" role="group" aria-label="Colormap options">
+                                        <button id="colormapGreyscale" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapInferno" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapPlasma" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapRainbow" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapSpectral" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapViridis" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
+                                        <button id="colormapYellowGreen" type="button" class="btn btn-secondary btnColormap" >&nbsp</button>
                                     </div>
                                 </a>
                             </li>
@@ -312,6 +295,23 @@
         <div id="potree_render_area"></div>
 
         <div id="controls" class="btn-toolbar" role="toolbar" aria-label="Point Cloud toolbar">
+            <div class="btn-group me-3" role="group" aria-label="Measurement tools">
+                <button id="measurements" type="button"
+                        class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-ruler"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <li><a class="dropdown-item measHeight" href="#">Height</a></li>
+                    <li><a class="dropdown-item measDistance" href="#">Distance</a></li>
+                    <li><a class="dropdown-item measArea" href="#">Area</a></li>
+                    <li><a class="dropdown-item measAngle" href="#">Angle</a></li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <li><a class="dropdown-item" href="#" id="measClear">Clear Measurements</a></li>
+                </ul>
+            </div>
+
             <div class="btn-group me-3" role="group" aria-label="Image Control">
                 <button type="button" class="btn btn-outline-primary prevImage"><i class="fa-solid fa-arrow-left"></i></button>
                 <button type="button" class="btn btn-outline-primary active camerasToggle" data-bs-toggle="button" autocomplete="off" aria-pressed="true"><i class="fa-solid fa-camera"></i></button>

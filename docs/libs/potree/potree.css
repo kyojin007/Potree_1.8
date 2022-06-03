@@ -23,35 +23,30 @@
 /* http://paletton.com */
 
 
-
-
-:root{
-	
+:root {
 	--color-0: 			rgba( 25, 40, 44, 1);
 	--color-1: 			rgba(122,129,132, 1);
 	--color-2: 			rgba( 57, 71, 75, 1);
 	--color-3: 			rgba( 45,109,130, 1);
 	--color-4: 			rgba( 16,143,185, 1);
-	
+
 	--bg-color:			var(--color-0);
 	--bg-color-2:		rgb(60, 80, 85);
 	--bg-light-color:	rgba( 48, 61, 65, 1);
 	--bg-dark-color:	rgba( 24, 31, 33, 1);
 	--bg-hover-color:	var(--color-2);
-	
+
 	--font-color:		#9AA1A4;
 	--font-color-2:		#ddd;
 	--font-color:		#cccccc;
 	--border-color:		black;
-	
+
 	--measurement-detail-node-bg-light:		var(--color-1);
 	--measurement-detail-node-bg-dark:		var(--color-2);
 	--measurement-detail-area-bg-color:		#eee;
-
-	
 }
 
-#potree_sidebar_container{
+#potree_sidebar_container {
 	position:	absolute;
 	z-index:	0;
 	width:		350px;
@@ -62,13 +57,13 @@
 	background-color:	var(--bg-color);
 }
 
-#sidebar_root{
+#sidebar_root {
 	color:				var(--font-color);
 	font-family:		Arial,Helvetica,sans-serif;
 	font-size:			1em;
 }
 
-.potree_failpage{
+.potree_failpage {
 	width: 100%;
 	height: 100%;
 	background-color: white;
@@ -76,12 +71,12 @@
 	margin: 15px;
 }
 
-.potree_failpage a{
+.potree_failpage a {
 	color: initial !important;
 	text-decoration: underline !important;
 }
 
-.potree_info_text{
+.potree_info_text {
 	color:		white;
 	font-weight: bold;
 	text-shadow:  1px  1px 1px black,
@@ -90,7 +85,7 @@
 				 -1px -1px 1px black;
 }
 
-.potree_message{
+.potree_message {
 	width: 500px;
 	background-color: var(--bg-color);
 	padding: 5px;
@@ -109,10 +104,10 @@
 }
 
 #potree_description{
-	position: absolute; 
-	top: 10px; 
-	left: 50%; 
-	transform: translateX(-50%); 
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
 	text-align: center;
 	z-index:	1000;
 }
@@ -123,7 +118,7 @@
 	font-size:		100%;
 	font-weight:	bold;
 	position:		relative;
-	display:		flex; 
+	display:		flex;
 	flex-direction:	row;
 }
 
@@ -134,9 +129,9 @@
 #potree_quick_buttons{
 	position: absolute;
 	left: 4px;
-	top: 4px; 
-	width: 10px; 
-	height: 10px; 
+	top: 4px;
+	width: 10px;
+	height: 10px;
 	z-index: 10000;
 	float: left;
 }
@@ -163,7 +158,7 @@
 	margin:			4px;
 }
 
-#potree_render_area{
+#potree_render_area {
 	position: 	absolute;
 	/*background: linear-gradient(-90deg, red, yellow);*/
 	top: 		0px;
@@ -187,10 +182,12 @@
 	background-color: var(--bg-dark-color);
 }
 
+/*
 a:hover, a:visited, a:link, a:active{
 	color: 				#ccccff;
 	text-decoration: 	none;
 }
+*/
 
 .annotation{
 	position:		absolute;
@@ -236,7 +233,7 @@ a:hover, a:visited, a:link, a:active{
 	width:			24px;
 	height:			24px;
 	cursor: 		pointer;
-	
+
 }
 
 .annotation-item {
@@ -296,7 +293,7 @@ a:hover, a:visited, a:link, a:active{
 	margin:			0px 0px 8px 8px;
 }
 
-	
+
 .annotation-description-content{
 	color:			white;
 }
@@ -310,13 +307,13 @@ a:hover, a:visited, a:link, a:active{
 }
 
 
-canvas { 
-	width: 100%; 
-	height: 100% 
+canvas {
+	width: 100%;
+	height: 100%
 }
 
-body{ 
-	margin: 	0; 
+body{
+	margin: 	0;
 	padding: 	0;
 	position:	absolute;
 	width: 		100%;
@@ -386,7 +383,7 @@ body{
 
 .pv-panel-heading{
 	padding: 	4px !important;
-	display: 	flex; 
+	display: 	flex;
 	flex-direction: row
 }
 
@@ -533,7 +530,7 @@ body{
 	display: 		block;
 	text-align: 	center;
 	overflow: 		hidden;
-	white-space: 	nowrap; 
+	white-space: 	nowrap;
 	font-weight:	bold;
 	font-size:		90%;
 	letter-spacing:	1px;
@@ -599,9 +596,9 @@ body{
 }
 
 .input-grid-label{
-	flex-grow: 1; 
-	margin: 0px 3px 0px 3px; 
-	text-align:center; 
+	flex-grow: 1;
+	margin: 0px 3px 0px 3px;
+	text-align:center;
 	font-weight: bold;
 }
 
@@ -646,7 +643,7 @@ body{
 
 
 
-/** 
+/**
  * OVERRIDES
  */
 
